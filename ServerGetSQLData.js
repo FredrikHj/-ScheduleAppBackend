@@ -26,27 +26,15 @@ let incomminggSQLData = [];
 runSQLConn(correctSQLStatements('default'));
 
 function runSQLConn(currentStatement) {
-   console.log('23');
+    console.log('23');
     count+= 1;
-   console.log('Runda:');
-   console.log(count);
-    
-   console.log(currentStatement);
-   console.log('25');
+    console.log('Runda:');
+    console.log(count);
+    console.log(currentStatement);
+    console.log('25');
+    console.log(currentStatement);
 
-   console.log(currentStatement);
-
-
-     let con = mysql.createConnection(process.env.JAWSDB_URL
-        
-    
-    
-   /* {
-        host: "m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com",
-        user: "djcp7bmvky3s0mnm",
-        password: 'osp74zwrq5ut4gun',
-        database: 'q3uqurm7z68qb3h2'
-    } */ );
+    let con = mysql.createConnection(process.env.JAWSDB_URL);
     con.connect(function(err) {
         if (err) throw err;
        console.log("Ansluten till DB :)");
