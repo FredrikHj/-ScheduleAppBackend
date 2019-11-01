@@ -22,18 +22,6 @@ let sqlChange = false;
 let count = 0;
 let incomminggSQLData = [];
 
-var connection = mysql.createConnection('mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2'/* process.env.JAWSDB_URL */);
-
-connection.connect();
-
-connection.query('SELECT * FROM data', function(err, rows, fields) {
-    if (err) throw err;
-
-    console.log(rows);
-});
-
-connection.end();
-/*
 // Default Select, is running when apps is openening
 runSQLConn(correctSQLStatements('default'));
 
@@ -45,6 +33,8 @@ function runSQLConn(currentStatement) {
     console.log(currentStatement);
     console.log('25');
     console.log(currentStatement);
+
+    var con = mysql.createConnection('mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2'/* process.env.JAWSDB_URL */);
 
     con.connect(function(err) {
         if (err) throw err;
@@ -71,15 +61,14 @@ function runSQLConn(currentStatement) {
         con.destroy();
     }
 }
-
 // Run addData 
 app.post('/SQLData/AddPost', (req, res) => {
     console.log('65');
     currentStatement = req.body.sqFilter;
     console.log(currentStatement.split());
     runSQLConn(correctSQLStatements('add', currentStatement));
-   incomminggSQLData.push(currentStatement);
-    console.log(incomminggSQLData);
+/*   incomminggSQLData.push(currentStatement);
+    console.log(incomminggSQLData); */
     
 })
 // Run filtering
@@ -96,7 +85,6 @@ app.post('/SQLData/filter', (req, res) => {
         res.status(201).send(incomminggSQLData);
     }, 100);    
 })    
-*/
 app.listen(port, function (){
     console.log(`getSQLData is listening on port ${port}!`)
-})    
+})   
