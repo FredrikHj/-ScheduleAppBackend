@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "homepage": ".",
-  "main": "./build/index.html",
+  "main": "index.html",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
