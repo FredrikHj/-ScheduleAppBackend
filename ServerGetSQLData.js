@@ -34,17 +34,17 @@ function runSQLConn(currentStatement) {
     console.log('25');
     console.log(currentStatement);
 
-    let con = mysql.createConnection(process.env.JAWSDB_URL);
-    con.connect();
+    var connection = mysql.createConnection(process.env.JAWSDB_URL);
 
-    con.query(currentStatement, function(err, rows, fields) {
-      if (err) throw err;
-    
-      console.log(rows);
+    connection.connect();
+
+    connection.query(currentStatement, function(err, rows, fields) {
+        if (err) throw err;
+
+        console.log(rows);
     });
-    
-    con.end();
 
+    connection.end();
     /* 
     con.connect(function(err) {
         if (err) throw err;
