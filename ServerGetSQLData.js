@@ -22,6 +22,18 @@ let sqlChange = false;
 let count = 0;
 let incomminggSQLData = [];
 
+var connection = mysql.createConnection(process.env.JAWSDB_URL);
+
+connection.connect();
+
+connection.query('SELECT * FROM data', function(err, rows, fields) {
+    if (err) throw err;
+
+    console.log(rows);
+});
+
+connection.end();
+/*
 // Default Select, is running when apps is openening
 runSQLConn(correctSQLStatements('default'));
 
@@ -34,18 +46,6 @@ function runSQLConn(currentStatement) {
     console.log('25');
     console.log(currentStatement);
 
-    var connection = mysql.createConnection(process.env.JAWSDB_URL);
-
-    connection.connect();
-
-    connection.query(currentStatement, function(err, rows, fields) {
-        if (err) throw err;
-
-        console.log(rows);
-    });
-
-    connection.end();
-    /* 
     con.connect(function(err) {
         if (err) throw err;
        console.log("Ansluten till DB :)");
@@ -70,9 +70,8 @@ function runSQLConn(currentStatement) {
     if (count === 140) {
         con.destroy();
     }
-    */
 }
-/*
+
 // Run addData 
 app.post('/SQLData/AddPost', (req, res) => {
     console.log('65');
