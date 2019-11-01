@@ -35,6 +35,17 @@ function runSQLConn(currentStatement) {
     console.log(currentStatement);
 
     let con = mysql.createConnection(process.env.JAWSDB_URL);
+    con.connect();
+
+    con.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
+      if (err) throw err;
+    
+      console.log('The solution is: ', rows[0].solution);
+    });
+    
+    con.end();
+
+    /* 
     con.connect(function(err) {
         if (err) throw err;
        console.log("Ansluten till DB :)");
@@ -59,15 +70,17 @@ function runSQLConn(currentStatement) {
     if (count === 140) {
         con.destroy();
     }
+    */
 }
+/*
 // Run addData 
 app.post('/SQLData/AddPost', (req, res) => {
     console.log('65');
     currentStatement = req.body.sqFilter;
     console.log(currentStatement.split());
     runSQLConn(correctSQLStatements('add', currentStatement));
-/*   incomminggSQLData.push(currentStatement);
-    console.log(incomminggSQLData); */
+   incomminggSQLData.push(currentStatement);
+    console.log(incomminggSQLData);
     
 })
 // Run filtering
@@ -86,4 +99,5 @@ app.post('/SQLData/filter', (req, res) => {
 })    
 app.listen(port, function (){
     console.log(`getSQLData is listening on port ${port}!`)
-})   
+})    
+*/
