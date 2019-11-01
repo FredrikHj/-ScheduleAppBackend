@@ -37,12 +37,16 @@ function runSQLConn(currentStatement) {
    console.log(currentStatement);
 
 
-    var con = mysql.createConnection({
+     let con = mysql.createConnection(process.env.JAWSDB_URL
+        
+    
+    
+   /* {
         host: "m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com",
         user: "djcp7bmvky3s0mnm",
         password: 'osp74zwrq5ut4gun',
         database: 'q3uqurm7z68qb3h2'
-    });
+    } */ );
     con.connect(function(err) {
         if (err) throw err;
        console.log("Ansluten till DB :)");
