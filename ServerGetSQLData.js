@@ -96,7 +96,7 @@ app.post('/SQLData/filter', (req, res) => {
         res.status(201).send(incomminggSQLData);
     }, 100);    
 })    
+*/
 app.listen(port, function (){
     console.log(`getSQLData is listening on port ${port}!`)
 })    
-*/
