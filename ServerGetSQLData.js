@@ -38,10 +38,11 @@ function runSQLConn(currentStatement) {
 
 
     var con = mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: '',
-        database: 'scheduleapp'
+        host: "m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com",
+        user: "djcp7bmvky3s0mnm",
+        password: 'osp74zwrq5ut4gun',
+        port: '3306',
+        database: 'q3uqurm7z68qb3h2'
     });
     con.connect(function(err) {
         if (err) throw err;
