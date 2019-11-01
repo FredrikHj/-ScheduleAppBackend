@@ -37,10 +37,10 @@ function runSQLConn(currentStatement) {
     let con = mysql.createConnection(process.env.JAWSDB_URL);
     con.connect();
 
-    con.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
+    con.query(currentStatement, function(err, rows, fields) {
       if (err) throw err;
     
-      console.log('The solution is: ', rows[0].solution);
+      console.log(rows);
     });
     
     con.end();
