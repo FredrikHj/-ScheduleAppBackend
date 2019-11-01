@@ -22,7 +22,7 @@ let sqlChange = false;
 let count = 0;
 let incomminggSQLData = [];
 
-var connection = mysql.createConnection(process.env.JAWSDB_URL);
+var connection = mysql.createConnection('mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2'/* process.env.JAWSDB_URL */);
 
 connection.connect();
 
