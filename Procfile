@@ -1,1 +1,2 @@
-web: build/index.html
+web: node ServerGetSQLData.js
+web: index.html
