@@ -1,2 +1,2 @@
 run:
-  web: node ServerGetSQLData.js
+  node ServerGetSQLData.js
