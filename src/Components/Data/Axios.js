@@ -4,7 +4,7 @@ import { updateSQLDataArr, updateSQLDataColsArr, updateSQLFilterMonthsBtnsArr,  
 let SQLFilterMonthsBtnsArr = [];
 let SQLFilterConcernedBtnsArr = [];
 
-let backendURL = 'ServerGetSQLData.js'; // Heroku
+let backendURL = 'process.env.baseURL || "http://localhost:3001"'; // Heroku
 //let backendURL = 'http://fredrikipnrtelia.mina-projekt.se:3001'; // Pub
 //let backendURL = 'http://fredrikipnrtelia.mina-projekt.se:3002'; // Dev
 export let axiosGet = (/* type, currentSQLStatement */) => {
