@@ -1,0 +1,124 @@
+ /* Checkbox filter ----------- */
+.container__checkboxMonth, .container__checkboxConcerned{
+  display: flex;
+  flex-direction: row;
+  z-index: 1;
+}
+.container__checkboxMonth{
+  width: 26%;
+}
+.container__checkboxConcerned{
+    width: 33%;
+}
+.checkbox__input{
+  position: relative;
+  top: 3px;
+  left: 16px;
+  right: 0;
+  bottom: 0;
+  height: 30px;
+  width: 103px;
+  opacity: 0;
+}
+.checkbox__labelMonth, .checkbox__labelConcerned{
+  display: block;
+  cursor: pointer;
+  border: 4px solid grey;
+  border-radius: 4px;
+  text-align: center;
+  background-color: rgb(68, 68, 223);
+  color: white;
+}
+.checkbox__labelMonth{
+  width: 150px;
+  height: 20px;
+  margin: 10px 0px 0px -63px;
+}
+.checkbox__labelConcerned{
+  width: 200px;
+  height: 50px;
+  word-break: break-word;
+  margin: 11px 8px 0px -68px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ================== If checked ================== */
+input[type=checkbox]:checked + .checkbox__labelMonth,
+input[type=checkbox]:checked + .checkbox__labelConcerned{
+    background-color: white;
+    color: black;
+}
+/* ================== Button style ================== */
+.adminBtn{
+  position: relative;
+  top: -210px;
+  left: 950px;
+  width: 366px;
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  z-index: 1;
+}
+.button {
+  padding: 15px 25px;
+  font-size: 24px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+.addFormBtn{
+  position: relative;
+  top: -6px;
+  left: calc(50% - 50px);
+  height: 45px;
+  width: 100px;
+  font-size: 16px;
+}
+/* ================== Form logInOut style ================== */
+#logInOut__heaflineStr{
+  margin-top: 2px;
+  width: 100%;
+  margin-left: -11px;
+}
+#logInOut__inputContainer{
+  position: relative;
+  top: -5px;
+  left: 5px;
+}
+#inputContainer__userName, #inputContainer__pwd{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  width: 240px;
+  margin-top: -20px;
+}
+#userName__str, #pwd__str{
+  width: 108px;
+  text-align: center;
+} 
+.icons__userName, .icons__pwd{
+  position: absolute;
+  margin-left: 106px;
+
+}
+.logInOut__inputUserName, .logInOut__inputPwd{
+  width: 100px;
+  height: 10px;
+}

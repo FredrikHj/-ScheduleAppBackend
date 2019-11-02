@@ -1,0 +1,87 @@
+/* SQL Table ----------- */
+#tableSchedule, #addSqlData{
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  margin-top: 12.5px;
+}
+#tableScheduleBody{
+  display: block;
+  height: 66vh;
+  width: 100%;
+  overflow: auto;
+  overflow-x: hidden;
+}
+#addSqlData{
+  display: block;
+  position: relative;
+  width: 99%;
+  top: 60px;
+}
+thead, tbody tr{
+  display:table;
+  width:100%;
+  table-layout:fixed;
+}
+#tableSchedule td, #tableSchedule th, #addSqlData td{
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+#tableSchedule tr:nth-child(even), #addSqlData td{
+  background-color: #f2f2f2;
+}
+#tableSchedule th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: rgb(68, 68, 223);
+  color: white;
+}
+
+#tableSchedule thead {
+  width: 99%;
+}
+.tableCol1{
+  width: 4%;
+}
+.tableCol2{
+  width: 11%;
+}
+.tableCol3{
+  width: 11%;
+}
+.tableCol4{
+  width: 15%;
+}
+.tableCol9{
+  width: 15%;
+}
+.addSqlInput{
+  width: 100%;
+}
+.tableCol1AddForm{
+  width: 4%;
+}
+.tableCol2AddForm{
+  width: 9.2%;
+}
+.tableCol3AddForm{
+  width: 9.4%;
+}
+.tableCol4AddForm{
+  width: 14.9%;
+}
+.tableCol5AddForm{
+  width: 9.3%;
+}
+.tableCol6AddForm{
+  width: 9.3%;
+}
+.tableCol7AddForm{
+  width: 9.4%;
+}
+.tableCol8AddForm{
+  width: 9.3%;
+}
+.tableCol9AddForm{
+  width: 14.9%;
+}
