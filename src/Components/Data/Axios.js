@@ -4,7 +4,7 @@ import { updateSQLDataArr, updateSQLDataColsArr, updateSQLFilterMonthsBtnsArr,  
 let SQLFilterMonthsBtnsArr = [];
 let SQLFilterConcernedBtnsArr = [];
 
-console.log(process.env);
+console.log(process);
 
 let backendURL = `${process.env.baseURL}:${process.env.PORT}` || "http://localhost:5000"; // Heroku
 //let backendURL = 'http://fredrikipnrtelia.mina-projekt.se:3001'; // Pub
