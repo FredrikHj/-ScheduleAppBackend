@@ -5,7 +5,7 @@ let SQLFilterMonthsBtnsArr = [];
 let SQLFilterConcernedBtnsArr = [];
 
 console.log(process);
-let backendURL = process.env.PUBLIC_URL || "http://localhost:5000"; // Heroku;
+let backendURL = 'https://hbgworks-poc-event-schedule.herokuapp.com/'; // Heroku;
 //let backendURL = `${process.env.baseURL}:${process.env.PORT}` || "http://localhost:5000"; // Heroku
 //let backendURL = 'http://fredrikipnrtelia.mina-projekt.se:3001'; // Pub
 //let backendURL = 'http://fredrikipnrtelia.mina-projekt.se:3002'; // Dev
