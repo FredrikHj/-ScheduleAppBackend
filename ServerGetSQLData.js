@@ -23,7 +23,6 @@ function correctSQLStatements(statementType, statementObj) {
 let sqlChange = false;
 let count = 0;
 let incomminggSQLData = [];
-
 // Default Select, is running when apps is openening
 runSQLConn(correctSQLStatements('default'));
 
