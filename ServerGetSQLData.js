@@ -6,7 +6,7 @@ var mysql = require('mysql');
 
 app.use(express.json());
 app.use(cors());
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3001;
 
 let currentStatement = '';
 // Find correct SQLStatement
