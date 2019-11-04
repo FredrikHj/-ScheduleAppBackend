@@ -7,7 +7,7 @@ var mysql = require('mysql');
 app.use(express.json());
 app.use(cors());
 const port = process.env.PORT || 3001;
-console.log(process);
+console.log(process.env);
 
 let currentStatement = '';
 
