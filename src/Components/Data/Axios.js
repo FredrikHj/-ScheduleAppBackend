@@ -10,7 +10,7 @@ let backendURL = './ServerGetSQLData.js'; // Heroku;
 //let backendURL = 'http://fredrikipnrtelia.mina-projekt.se:3001'; // Pub
 //let backendURL = 'http://fredrikipnrtelia.mina-projekt.se:3002'; // Dev
 export let axiosGet = (/* type, currentSQLStatement */) => {
-    axios.get(`${backendURL}/SQLData`).
+    axios.get(`${backendURL}`).
     then(response => {
         // Store the incommingg API data in a object
         console.log(response.data);
