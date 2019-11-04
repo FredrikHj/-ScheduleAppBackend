@@ -4,8 +4,8 @@ import { updateSQLDataArr, updateSQLDataColsArr, updateSQLFilterMonthsBtnsArr,  
 let SQLFilterMonthsBtnsArr = [];
 let SQLFilterConcernedBtnsArr = [];
 
-console.log(process.env['API_TOKEN']);
-let backendURL = "http://localhost:5000"; // Heroku;
+console.log(process.env['URL']);
+let backendURL = process.env['URL'] || "http://localhost:5000"; // Heroku;
 //let backendURL = `${process.env.baseURL}:${process.env.PORT}` || "http://localhost:5000"; // Heroku
 //let backendURL = 'http://fredrikipnrtelia.mina-projekt.se:3001'; // Pub
 //let backendURL = 'http://fredrikipnrtelia.mina-projekt.se:3002'; // Dev
