@@ -9,6 +9,7 @@ app.use(cors());
 const port = process.env.PORT || 3001;
 
 let currentStatement = '';
+
 // Find correct SQLStatement
 function correctSQLStatements(statementType, statementObj) {
     if (statementType === 'default') currentStatement = 'SELECT * FROM data'    
