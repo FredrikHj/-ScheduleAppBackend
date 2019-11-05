@@ -5,17 +5,17 @@ let SQLFilterMonthsBtnsArr = [];
 let SQLFilterConcernedBtnsArr = [];
 
 console.log(process.env);
-let backendURL = 'https://hbgworks-poc-event-schedule.herokuapp.com/'; // Heroku;
+let backendURL = 'https://hbgworks-poc-event-schedule.herokuapp.com/' || "http://localhost:5000"; // Heroku;
 //let backendURL = `${process.env.baseURL}:${process.env.PORT}` || "http://localhost:5000"; // Heroku
 export let axiosGet = (/* type, currentSQLStatement */) => {
     axios.get(`${backendURL}`).
     then(response => {
         // Store the incommingg API data in a object
         console.log(response.data);
-        updateSQLDataArr(response.data);           
+        /* updateSQLDataArr(response.data);           
         saveFilterBtns(response.data);
         updateSQLDataColsArr(Object.keys(response.data[0]));            
-    }).
+    */}).
     catch(error => {
         //console.log(error.response);
     });
