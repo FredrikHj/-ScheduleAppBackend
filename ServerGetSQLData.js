@@ -66,7 +66,7 @@ function runSQLConn(currentStatement) {
 app.post('/SQLData/AddPost', (req, res) => {
     console.log('65');
     currentStatement = req.body.sqFilter;
-    console.log(currentStatement.split());
+    console.log(currentStatement);
     runSQLConn(correctSQLStatements('add', currentStatement));
 /*   incomminggSQLData.push(currentStatement);
     console.log(incomminggSQLData); */
