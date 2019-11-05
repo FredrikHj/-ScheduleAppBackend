@@ -1,1 +1,1 @@
-workers: node ServerGetSQLData.js
+web: node ServerGetSQLData.js
