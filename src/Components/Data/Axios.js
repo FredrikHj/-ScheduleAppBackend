@@ -5,10 +5,8 @@ let SQLFilterMonthsBtnsArr = [];
 let SQLFilterConcernedBtnsArr = [];
 
 console.log(process.env);
-let backendURL = './ServerGetSQLData.js'; // Heroku;
+let backendURL = 'https://hbgworks-poc-event-schedule.herokuapp.com/'; // Heroku;
 //let backendURL = `${process.env.baseURL}:${process.env.PORT}` || "http://localhost:5000"; // Heroku
-//let backendURL = 'http://fredrikipnrtelia.mina-projekt.se:3001'; // Pub
-//let backendURL = 'http://fredrikipnrtelia.mina-projekt.se:3002'; // Dev
 export let axiosGet = (/* type, currentSQLStatement */) => {
     axios.get(`${backendURL}`).
     then(response => {
@@ -21,15 +19,6 @@ export let axiosGet = (/* type, currentSQLStatement */) => {
     catch(error => {
         //console.log(error.response);
     });
-
-/*     axios.get('http://fredrikipnrtelia.mina-projekt.se:81/HBGWorksApp/index.php').
-    then(response => {
-        // Store the incommingg API data in a object
-        console.log(response.data);
-    }).
-    catch(error => {
-        //console.log(error.response);
-    }); */
 }
 export let axiosPost = (postType, SQLStatementsObj) => {  
     let type = '';
