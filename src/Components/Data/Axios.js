@@ -5,7 +5,7 @@ let SQLFilterMonthsBtnsArr = [];
 let SQLFilterConcernedBtnsArr = [];
 
 console.log(process.env);
-let backendURL = 'https://hbgworks-poc-event-schedule.herokuapp.com:80/ServerGetSQLData.js' || "http://localhost:5000"; // Heroku;
+let backendURL = 'https://hbgworks-poc-event-schedule.herokuapp.com/ServerGetSQLData.js' || "http://localhost:5000"; // Heroku;
 //let backendURL = `${process.env.baseURL}:${process.env.PORT}` || "http://localhost:5000"; // Heroku
 export let axiosGet = (/* type, currentSQLStatement */) => {
     axios.get(`${backendURL}`).
