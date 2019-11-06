@@ -89,9 +89,9 @@ app.post('/SQLData/filter', (req, res) => {
     console.log('69'); 
     //console.log(incomminggSQLData[1].length);
     
-    //setTimeout(() => {
+    setTimeout(() => {
         res.status(201).send(incomminggSQLData);
-    //}, 1000);    
+    }, 1000);    
 })    
 app.listen(port, function (){
     console.log(`getSQLData is listening on port ${port}!`)
