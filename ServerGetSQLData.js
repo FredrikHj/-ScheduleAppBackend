@@ -13,6 +13,9 @@ let currentStatement = '';
 
 // Find correct SQLStatement
 function correctSQLStatements(statementType, statementObj) {
+    console.log('16');
+    console.log(statementObj);
+    
     if (statementType === 'default') currentStatement = 'SELECT * FROM data'    
     if (statementType === 'filter') currentStatement = `SELECT * FROM data ${statementObj.operator} ${ statementObj.filterIn } in ('${ statementObj.SQLFilterStr}')`;
     if (statementType === 'add') currentStatement = `INSERT INTO data ${ statementObj.cols } VALUES ${ statementObj.data }`;
@@ -67,7 +70,7 @@ app.post('/SQLData/AddPost', (req, res) => {
     console.log('65');
     currentStatement = req.body.sqFilter;
     console.log(currentStatement);
-   // runSQLConn(correctSQLStatements('add', currentStatement));
+    runSQLConn(correctSQLStatements('add', currentStatement));
 /*   incomminggSQLData.push(currentStatement);
     console.log(incomminggSQLData); */
     
