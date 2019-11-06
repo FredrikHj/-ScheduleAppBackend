@@ -7,15 +7,10 @@ var mysql = require('mysql');
 app.use(express.json());
 app.use(cors());
 const port = process.env.PORT || 3001;
-console.log(process.env.PUBLIC_URL);
 
 let currentStatement = '';
-
 // Find correct SQLStatement
 function correctSQLStatements(statementType, statementObj) {
-    console.log('16');
-    console.log(statementObj);
-    
     if (statementType === 'default') currentStatement = 'SELECT * FROM data'    
     if (statementType === 'filter') currentStatement = `SELECT * FROM data ${statementObj.operator} ${ statementObj.filterIn } in ('${ statementObj.SQLFilterStr}')`;
     if (statementType === 'add') currentStatement = `INSERT INTO data ${ statementObj.cols } VALUES ${ statementObj.data }`;
@@ -26,21 +21,25 @@ function correctSQLStatements(statementType, statementObj) {
 let sqlChange = false;
 let count = 0;
 let incomminggSQLData = [];
+
 // Default Select, is running when apps is openening
 runSQLConn(correctSQLStatements('default'));
 
 function runSQLConn(currentStatement) {
-    console.log('23');
+   console.log('23');
     count+= 1;
-    console.log('Runda:');
-    console.log(count);
-    console.log(currentStatement);
-    console.log('25');
-    console.log(currentStatement);
+   console.log('Runda:');
+   console.log(count);
+    
+   console.log(currentStatement);
+   console.log('25');
 
-    var con = mysql.createConnection('mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2'/* process.env.JAWSDB_URL */);
+   console.log(currentStatement);
 
-    con.connect(function(err) {
+
+   var con = mysql.createConnection('mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2');
+
+   con.connect(function(err) {
         if (err) throw err;
        console.log("Ansluten till DB :)");
 
@@ -69,7 +68,7 @@ function runSQLConn(currentStatement) {
 app.post('/SQLData/AddPost', (req, res) => {
     console.log('65');
     currentStatement = req.body.sqFilter;
-    console.log(currentStatement);
+    console.log(currentStatement.split());
     runSQLConn(correctSQLStatements('add', currentStatement));
 /*   incomminggSQLData.push(currentStatement);
     console.log(incomminggSQLData); */
@@ -77,7 +76,10 @@ app.post('/SQLData/AddPost', (req, res) => {
 })
 // Run filtering
 app.post('/SQLData/filter', (req, res) => {
-    incomminggSQLData = [];
+    if (incomminggSQLData.length = 1) {
+        incomminggSQLData = [];
+    }
+    //incomminggSQLData = [];
     sqlChange = true;
     currentStatement = req.body.SQLStatementsObj;
     console.log(currentStatement);
@@ -85,9 +87,11 @@ app.post('/SQLData/filter', (req, res) => {
     console.log('79'); 
     runSQLConn(correctSQLStatements(currentStatement.filterType, currentStatement));
     console.log('69'); 
+    //console.log(incomminggSQLData[1].length);
+    
     setTimeout(() => {
         res.status(201).send(incomminggSQLData);
-    }, 100);    
+    }, 1000);    
 })    
 app.listen(port, function (){
     console.log(`getSQLData is listening on port ${port}!`)
