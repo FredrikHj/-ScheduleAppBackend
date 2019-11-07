@@ -67,11 +67,11 @@ function runSQLConn(currentStatement) {
 // Run addData 
 app.post('/SQLData/AddPost', (req, res) => {
     console.log('65');
-    currentStatement = req.body.sqFilter;
-    console.log(currentStatement.split());
+    currentStatement = req.body.SQLStatementsObj;
+    console.log(currentStatement);
     runSQLConn(correctSQLStatements('add', currentStatement));
-/*   incomminggSQLData.push(currentStatement);
-    console.log(incomminggSQLData); */
+    incomminggSQLData.push(currentStatement);
+    //console.log(incomminggSQLData); 
     
 })
 // Run filtering
