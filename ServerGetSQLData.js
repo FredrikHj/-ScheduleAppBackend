@@ -84,9 +84,9 @@ function runSQLConn(SQLObj) {
         SQLConn.end();
     });      
     console.log(incommingSQLDataArr.length);
-/*     if (incommingSQLDataArr.length = 2) {
+        if (incommingSQLDataArr.length = 2) {
         incommingSQLDataArr = [];
-    } */
+    }
 
 }
 
