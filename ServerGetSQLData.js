@@ -34,7 +34,7 @@ runSQLConn(defaultSQL);
  */
 // Find correct SQLStatement
 function getSQLCols(){
-    return 'date, month, activity, state, concerned, type, place, content';
+    return 'date, lastEditedRecord, month, activity, state, concerned, type, place, content';
 }
 function correctSQLStatements(SQLObj){
     console.log('29');
@@ -68,9 +68,11 @@ function runSQLConn(SQLObj) {
         console.log('45');  
         console.log(correctSQLStatements(SQLObj));
         
-        SQLConn.query(correctSQLStatements(SQLObj), function (err, sqlResult) { 
-            console.log('72');
-            console.log(sqlResult);
+        SQLConn.query(correctSQLStatements(SQLObj), function (err, sqlResult) {
+         /*    if (!sqlResult.affectedRows) {
+                
+            } */
+            //console.log(sqlResult[0].lastEditedRecord.split(' ')[0]);
 
             incommingSQLDataArr.push(sqlResult);
             console.log('77');
@@ -99,10 +101,9 @@ function runSQLConn(SQLObj) {
             statementType: 'default',
         });
 
-
         console.log('56');
         setTimeout(() => {
-            //console.log(incommingSQLDataArr);
+            console.log(incommingSQLDataArr);
             res.status(201).send(incommingSQLDataArr[0]);
         }, 1000);    
     });
