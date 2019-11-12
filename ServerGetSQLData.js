@@ -34,7 +34,7 @@ runSQLConn(defaultSQL);
  */
 // Find correct SQLStatement
 function getSQLCols(){
-    return 'date, lastEditedRecord, month, activity, state, concerned, type, place, content';
+    return 'date, month, activity, state, concerned, type, place, content';
 }
 function correctSQLStatements(SQLObj){
     choosenStatement = '';
