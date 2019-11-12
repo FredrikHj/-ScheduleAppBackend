@@ -37,18 +37,13 @@ function getSQLCols(){
     return 'date, lastEditedRecord, month, activity, state, concerned, type, place, content';
 }
 function correctSQLStatements(SQLObj){
-    console.log('29');
-    console.log(SQLObj);
-    
     choosenStatement = '';
     
     if (SQLObj.statementType === 'default') choosenStatement = `SELECT ${ getSQLCols()} FROM data ORDER BY date DESC`;
     if (SQLObj.statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     if (SQLObj.statementType === 'add') choosenStatement = `INSERT INTO data ${ SQLObj.currentStatement.cols } VALUES ${ SQLObj.currentStatement.data }`;  
 
-    console.log('26'); 
     currentStatement = choosenStatement;
-    console.log(currentStatement);
     return currentStatement;
 }
 
@@ -57,26 +52,21 @@ function runSQLConn(SQLObj) {
         
     } */
     count++;
-    console.log('39');  
-    console.log(count);
     // Creates a connection between the server and my client and listen for SQL changes¨
     let SQLConn = mysql.createConnection('mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2');
     
     console.log("Ansluten till DB :)");
     SQLConn.connect(function(err) { 
-        if (err) throw err;
-        console.log('45');  
-        console.log(correctSQLStatements(SQLObj));
-        
+        if (err) throw err;        
         SQLConn.query(correctSQLStatements(SQLObj), function (err, sqlResult) {
+            console.log('62');
+            console.log(sqlResult);
          /*    if (!sqlResult.affectedRows) {
                 
             } */
             //console.log(sqlResult[0].lastEditedRecord.split(' ')[0]);
 
             incommingSQLDataArr.push(sqlResult);
-            console.log('77');
-            //console.log(sqlResult.length);
             if (err) {
                 //SQLConn.release();
                 return;
@@ -101,9 +91,9 @@ function runSQLConn(SQLObj) {
             statementType: 'default',
         });
 
-        console.log('56');
         setTimeout(() => {
-            console.log(incommingSQLDataArr);
+            console.log('92');
+            console.log(incommingSQLDataArr.length);
             res.status(201).send(incommingSQLDataArr[0]);
         }, 1000);    
     });
