@@ -61,8 +61,6 @@ function runSQLConn(SQLObj) {
     SQLConn.connect(function(err) { 
         if (err) throw err;        
         SQLConn.query(correctSQLStatements(SQLObj), function (err, sqlResult) {
-            console.log('62');
-            console.log(sqlResult);
          /*    if (!sqlResult.affectedRows) {
                 
             } */
