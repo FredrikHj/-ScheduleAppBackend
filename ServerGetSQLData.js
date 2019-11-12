@@ -93,7 +93,7 @@ function runSQLConn(SQLObj) {
 
         setTimeout(() => {
             console.log('92');
-            console.log(incommingSQLDataArr.length);
+            console.log(incommingSQLDataArr);
             res.status(201).send(incommingSQLDataArr[0]);
         }, 1000);    
     });
