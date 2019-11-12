@@ -42,8 +42,10 @@ function correctSQLStatements(SQLObj){
     if (SQLObj.statementType === 'default') choosenStatement = `SELECT ${ getSQLCols()} FROM data ORDER BY date DESC`;
     if (SQLObj.statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     if (SQLObj.statementType === 'add') choosenStatement = `INSERT INTO data ${ SQLObj.currentStatement.cols } VALUES ${ SQLObj.currentStatement.data }`;  
-
+    
     currentStatement = choosenStatement;
+    console.log('45');
+    console.log(currentStatement);
     return currentStatement;
 }
 
@@ -66,7 +68,9 @@ function runSQLConn(SQLObj) {
             } */
             //console.log(sqlResult[0].lastEditedRecord.split(' ')[0]);
 
-            incommingSQLDataArr.push(sqlResult);
+            if (incommingSQLDataArr.length > 1) incommingSQLDataArr.pop();
+            else incommingSQLDataArr.push(sqlResult);
+  
             if (err) {
                 //SQLConn.release();
                 return;
@@ -75,11 +79,6 @@ function runSQLConn(SQLObj) {
         });
         SQLConn.end();
     });      
-    console.log(incommingSQLDataArr.length);
-        if (incommingSQLDataArr.length = 2) {
-        incommingSQLDataArr = [];
-    }
-
 }
 
 // Run method when requested from client ======================================================================================
@@ -93,8 +92,8 @@ function runSQLConn(SQLObj) {
 
         setTimeout(() => {
             console.log('92');
-            console.log(incommingSQLDataArr);
-            res.status(201).send(incommingSQLDataArr[0]);
+            console.log(incommingSQLDataArr.length);
+            res.status(201).send(incommingSQLDataArr);
         }, 1000);    
     });
     // AddData 
@@ -129,7 +128,7 @@ function runSQLConn(SQLObj) {
         //defaultSQL+= incommingSQLData;
 
         console.log('79'); 
-        runSQLConn(incommingSQLData); 
+        runSQLConn(incommingSQLData.length); 
         console.log('69'); 
         //console.log(incommingSQLDataArr[1].length);
         
