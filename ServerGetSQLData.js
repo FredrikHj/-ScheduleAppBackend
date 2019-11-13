@@ -40,7 +40,7 @@ function getSQLCols(){  // Get the default cols
 function correctSQLStatements(SQLObj){ // Find correct SQLStatement
     choosenStatement = '';
     
-    if (SQLObj.statementType === 'default') choosenStatement = `SELECT ${ getSQLCols()} FROM data ORDER BY date DESC CALL settSentNr`;
+    if (SQLObj.statementType === 'default') choosenStatement = `SELECT ${ getSQLCols()} FROM data ORDER BY date DESC EXEC settSentNr`;
     if (SQLObj.statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     if (SQLObj.statementType === 'add') choosenStatement = `INSERT INTO data ${ SQLObj.currentStatement.cols } VALUES ${ SQLObj.currentStatement.data }`;   
     
@@ -51,8 +51,8 @@ function correctSQLStatements(SQLObj){ // Find correct SQLStatement
 }
 
 function runSQLConn(SQLObj) {
-/*     if (sqlChange === true) {
-        
+    /*     if (sqlChange === true) {
+            
     } */
     count++;
     // Creates a connection between the server and my client and listen for SQL changes¨
