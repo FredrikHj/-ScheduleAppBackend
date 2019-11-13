@@ -40,7 +40,7 @@ function getSQLCols(){  // Get the default cols
 function correctSQLStatements(SQLObj){ // Find correct SQLStatement
     choosenStatement = '';
     
-    if (SQLObj.statementType === 'default') choosenStatement = `SELECT ${ getSQLCols()} FROM data ORDER BY date DESC CALL settSentNr`;
+    if (SQLObj.statementType === 'default') choosenStatement = `SELECT ${ getSQLCols()} FROM data ORDER BY date DESC`;
     if (SQLObj.statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     if (SQLObj.statementType === 'add') choosenStatement = `INSERT INTO data ${ SQLObj.currentStatement.cols } VALUES ${ SQLObj.currentStatement.data }`;   
     
@@ -61,7 +61,7 @@ function runSQLConn(SQLObj) {
     console.log("Ansluten till DB :)");
     SQLConn.connect(function(err) { 
         if (err) throw err;        
-        SQLConn.query(correctSQLStatements(SQLObj), 'CALL settSentNr', function (err, sqlResult) {
+        SQLConn.query(`${correctSQLStatements(SQLObj)}; UPDATE data SET sent = 1 WHERE sent=0` , function (err, sqlResult) {
          /*    if (!sqlResult.affectedRows) {
                 
             } */
