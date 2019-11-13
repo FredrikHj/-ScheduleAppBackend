@@ -32,16 +32,31 @@ runSQLConn(defaultSQL);
     runSQLConn({statementType: defaultSQL });
 }, 4000, defaultSQL);
  */
-// Find correct SQLStatement
-function getSQLCols(){
+// Functions for SQL statements
+DELIMITER $$
+ 
+CREATE PROCEDURE `SelectAllCustomers`(IN done BOOLEAN)
+BEGIN
+    SELECT * FROM todos WHERE completed = done;
+END$$
+ 
+DELIMITER ;
+Create procedure SelectAllCustomers
+AS
+Begin
+<SQL STATEMENT>
+End
+Go
+
+function getSQLCols(){  // Get the default cols
     return 'date, month, activity, state, concerned, type, place, content';
 }
-function correctSQLStatements(SQLObj){
+function correctSQLStatements(SQLObj){ // Find correct SQLStatement
     choosenStatement = '';
     
-    if (SQLObj.statementType === 'default') choosenStatement = `SELECT ${ getSQLCols()} FROM data ORDER BY date DESC`;
+    if (SQLObj.statementType === 'default') choosenStatement = `SELECT ${ getSQLCols()} FROM data ORDER BY date DESC Call setSentNr`;
     if (SQLObj.statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
-    if (SQLObj.statementType === 'add') choosenStatement = `INSERT INTO data ${ SQLObj.currentStatement.cols } VALUES ${ SQLObj.currentStatement.data }`;  
+    if (SQLObj.statementType === 'add') choosenStatement = `INSERT INTO data ${ SQLObj.currentStatement.cols } VALUES ${ SQLObj.currentStatement.data }`;   
     
     currentStatement = choosenStatement;
     console.log('45');
