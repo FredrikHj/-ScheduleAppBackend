@@ -47,7 +47,7 @@ function getSQLCols(type){  // Get the default cols
 }
 function correctSQLStatements(SQLObj){ // Find correct SQLStatement
     choosenStatement = '';
-    if (SQLObj.statementType === 'default') choosenStatement = `SELECT ${ getSQLCols('default')} FROM data WHERE SENT=0 AND ORDER BY date DESC; ${sentOrNotSent('default')}`;
+    if (SQLObj.statementType === 'default') choosenStatement = `SELECT ${ getSQLCols('default')} FROM data WHERE sent=0 AND ORDER BY date DESC; ${sentOrNotSent('default')}`;
     if (SQLObj.statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     if (SQLObj.statementType === 'add') choosenStatement = `INSERT INTO data ${ SQLObj.currentStatement.cols } VALUES ${ SQLObj.currentStatement.data }`;   
     
