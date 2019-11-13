@@ -61,7 +61,7 @@ function runSQLConn(SQLObj) {
     console.log("Ansluten till DB :)");
     SQLConn.connect(function(err) { 
         if (err) throw err;        
-        SQLConn.query(correctSQLStatements(SQLObj), function (err, sqlResult) {
+        SQLConn.query(correctSQLStatements(SQLObj), 'CALL settSentNr', function (err, sqlResult) {
          /*    if (!sqlResult.affectedRows) {
                 
             } */
