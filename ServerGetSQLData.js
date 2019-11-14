@@ -74,15 +74,16 @@ function runSQLConn(SQLStatement) {
 function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLStatement
     let statementCols = 'date, month, activity, state, concerned, type, place, content';
     let settSentNr = 'UPDATE data SET sent = 1 WHERE sent=0';
-    let statementInsertIntoData = `('${ SQLObj.join("','")}');`;
     
     console.log('79');
     console.log(SQLObj);
     
-    if (statementType === 'default' && addRunning === false) choosenStatement = `SELECT (${ statementCols }) FROM ${backConfig.SQLTable} ORDER BY date DESC`;
-    if (statementType === 'default' && addRunning === true) choosenStatement = `SELECT (sent, ${ statementCols }) FROM data ORDER BY ${backConfig.SQLTable} DESC; ${settSentNr}`;
-    if (statementType === 'add' && addRunning === true)  choosenStatement = `INSERT INTO ${ backConfig.SQLTable} (sent, ${ statementCols }) VALUES${ statementInsertIntoData}`;  
-
+    if (statementType === 'default' && addRunning === false) choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} ORDER BY date DESC`;
+    if (statementType === 'default' && addRunning === true) choosenStatement = `SELECT sent, ${ statementCols } FROM data ORDER BY ${backConfig.SQLTable} DESC; ${settSentNr}`;
+    if (statementType === 'add' && addRunning === true) {
+        let statementInsertIntoData = `('${ SQLObj.join("','")}');`;
+        choosenStatement = `INSERT INTO ${ backConfig.SQLTable} sent, ${ statementCols } VALUES${ statementInsertIntoData}`;  
+    }
     if (statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     
     currentStatement = choosenStatement;
