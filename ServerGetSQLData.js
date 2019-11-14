@@ -7,10 +7,6 @@ const backConfig = require('./backConfig.json');
 const port = process.env.PORT || backConfig.serverPort;
 let serverIO = app.listen(port, () => console.log(`getSQLData is listening on port ${port}!`));
 
-// Socket IO connection
-const socketIO = require('socket.io');
-const ioListen = socketIO(serverIO);
-
 // MYSQL module for connection
 var mysql = require('mysql');
 
