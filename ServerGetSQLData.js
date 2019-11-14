@@ -2,8 +2,9 @@
 const express = require('express');
 const app = express();
 let cors = require('cors');
+const backConfig = require('./backConfig.json');
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || backConfig.serverPort;
 let serverIO = app.listen(port, () => console.log(`getSQLData is listening on port ${port}!`));
 
 // Socket IO connection
@@ -17,12 +18,11 @@ app.use(express.json());
 app.use(cors());
 
 // Declaring variables
-let firstRun = true;
+let addRunning = false;
 let count = 0;
 let incommingSQLDataArr = [];
 let currentStatement = '';
 let choosenStatement = '';
-let settSentNr = '';
 
 // Default Select, is running when apps is openening
 /* let defaultSQL = 'default';
@@ -33,54 +33,32 @@ runSQLConn(defaultSQL);
     runSQLConn({statementType: defaultSQL });
 }, 4000, defaultSQL);
 */
-// Functions for SQL statements
-function sentOrNotSent(type){
-    if (type === 'default') settSentNr = 'UPDATE data SET sent = 1 WHERE sent=0';
-    
-    return settSentNr;
-}
-function getSQLCols(type){  // Get the default cols
-    let cols = '';
-    if (type === 'default') cols = 'date, month, activity, state, concerned, type, place, content';
-
-    return cols;
-}
-function correctSQLStatements(SQLObj){ // Find correct SQLStatement
-    choosenStatement = '';
-    if (SQLObj.statementType === 'default') choosenStatement = `SELECT ${ getSQLCols('default')} FROM data ORDER BY date DESC; ${sentOrNotSent('default')}`;
-    if (SQLObj.statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
-    if (SQLObj.statementType === 'add') choosenStatement = `INSERT INTO data ${ SQLObj.currentStatement.cols } VALUES ${ SQLObj.currentStatement.data }`;   
-    
-    currentStatement = choosenStatement;
-    console.log('45');
-    console.log(currentStatement);
-    return currentStatement;
-}
-
-function runSQLConn(SQLObj) {
+function runSQLConn(SQLStatement) {
     count++;
     // Creates a connection between the server and my client and listen for SQL changes¨
     //let SQLConn = mysql.createConnection([{multipleStatements: true}, 'mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2']);
     let SQLConn = mysql.createConnection({
-        host     : 'm60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
-        user     : 'djcp7bmvky3s0mnm',
-        password : 'osp74zwrq5ut4gun',
-        port: 3306,
-        database: 'q3uqurm7z68qb3h2',
-        multipleStatements: true
+        host: backConfig.host,
+        user: backConfig.user,
+        password: backConfig.password,
+        port: backConfig.sqlPort,
+        database: backConfig.database,
+        multipleStatements: backConfig.multipleStatements,
     });
     console.log("Ansluten till DB :)");
     SQLConn.connect(function(err) { 
         if (err) throw err;
-        console.log(`${correctSQLStatements(SQLObj)}; ${settSentNr}`);
-        SQLConn.query(correctSQLStatements(SQLObj), function (err, sqlResult) {
-         /*    if (!sqlResult.affectedRows) {
-                
-            } */
-        console.log(sqlResult);
+        console.log('51');
+        console.log(SQLStatement);
+        
+        SQLConn.query(SQLStatement, function (err, sqlResult) {
+            console.log('53');
+            console.log(sqlResult);
+            incommingSQLDataArr.push(sqlResult);
+            //console.log(sqlResult);
 
-            if (incommingSQLDataArr.length > 1) incommingSQLDataArr.pop();
-            else incommingSQLDataArr.push(sqlResult);
+/*             if (incommingSQLDataArr.length > 1) incommingSQLDataArr.pop();
+            else */ 
   
             if (err) {
                 //SQLConn.release();
@@ -89,32 +67,52 @@ function runSQLConn(SQLObj) {
             
         });
         SQLConn.end();
-    });      
+    });
+
 }
+// Run function for the mehods ================================================================================================
+function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLStatement
+    let statementCols = 'date, month, activity, state, concerned, type, place, content';
+    let settSentNr = 'UPDATE data SET sent = 1 WHERE sent=0';
+    let statementInsertIntoData = `('${ SQLObj.join("','")}');`;
+    
+    console.log('79');
+    console.log(SQLObj);
+    
+    if (statementType === 'default' && addRunning === false) choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} ORDER BY date DESC`;
+    if (statementType === 'default' && addRunning === true) choosenStatement = `SELECT (sent, ${ statementCols }) FROM data ORDER BY ${backConfig.SQLTable} DESC; ${settSentNr}`;
+    if (statementType === 'add' && addRunning === true)  choosenStatement = `INSERT INTO ${ backConfig.SQLTable} (sent, ${ statementCols }) VALUES${ statementInsertIntoData}`;  
+
+    if (statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
+    
+    currentStatement = choosenStatement;
+    console.log('84');
+    console.log(currentStatement);
+
+    addRunning = false;
+    return currentStatement;
+}
+
 
 // Run method when requested from client ======================================================================================
     // Get
     app.get('/SQLData', (req, res) => {
-        runSQLConn({
-            statementType: 'default',
-        });
-
+        runSQLConn(buildCorrectSQLStatements('default', ''));
         setTimeout(() => {
             console.log('92');
-            console.log(incommingSQLDataArr.length);
+            //console.log(incommingSQLDataArr.length);
             res.status(201).send(incommingSQLDataArr);
         }, 1000);    
     });
     // AddData 
     app.post('/SQLData/AddPost', (req, res) => {
-        console.log('65');
-        let currentInData = req.body.SQLStatementsObj;
-        console.log(currentInData); 
+        addRunning = true;
 
-        runSQLConn({
-            statementType: 'add',
-            currentStatement: currentInData,
-        });
+        console.log('65');
+        let currentInData = req.body.formBody;
+        console.log(currentInData); 
+        runSQLConn(buildCorrectSQLStatements('add', currentInData));
+
         currentInData = {};
         //incommingSQLDataArr.push(currentStatement);
         
