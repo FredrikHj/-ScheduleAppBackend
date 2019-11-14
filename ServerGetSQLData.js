@@ -79,7 +79,7 @@ function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLSt
     console.log('79');
     console.log(SQLObj);
     
-    if (statementType === 'default' && addRunning === false) choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} ORDER BY date DESC`;
+    if (statementType === 'default' && addRunning === false) choosenStatement = `SELECT (${ statementCols }) FROM ${backConfig.SQLTable} ORDER BY date DESC`;
     if (statementType === 'default' && addRunning === true) choosenStatement = `SELECT (sent, ${ statementCols }) FROM data ORDER BY ${backConfig.SQLTable} DESC; ${settSentNr}`;
     if (statementType === 'add' && addRunning === true)  choosenStatement = `INSERT INTO ${ backConfig.SQLTable} (sent, ${ statementCols }) VALUES${ statementInsertIntoData}`;  
 
