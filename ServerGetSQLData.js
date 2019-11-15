@@ -75,10 +75,11 @@ function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLSt
     console.log(SQLObj);
     
     if (statementType === 'default' && addRunning === false) choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} ORDER BY date DESC`;
+    // Fortsätt här imorgon
     if (statementType === 'default' && addRunning === true) choosenStatement = `SELECT sent, ${ statementCols } FROM data ORDER BY ${backConfig.SQLTable} DESC; ${settSentNr}`;
     if (statementType === 'add' && addRunning === true) {
         let statementInsertIntoData = `('${ SQLObj.join("','")}');`;
-        choosenStatement = `INSERT INTO ${ backConfig.SQLTable} sent, ${ statementCols } VALUES${ statementInsertIntoData}`;  
+        choosenStatement = `INSERT INTO ${ backConfig.SQLTable} (sent, ${ statementCols }) VALUES${ statementInsertIntoData}`;  
     }
     if (statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     
