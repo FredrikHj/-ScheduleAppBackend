@@ -42,7 +42,7 @@ function runSQLConn(SQLStatement) {
         
         SQLConn.query(SQLStatement, function (err, sqlResult) {
             console.log('53');
-            console.log(sqlResult);
+            //console.log(sqlResult);
 
             incommingSQLDataArr.push(sqlResult);
 
@@ -92,8 +92,8 @@ app.get('/SQLData', (req, res) => {
     runSQLConn(buildCorrectSQLStatements('default', ''));
     //setTimeout(() => {
         console.log('92');
-        //console.log(incommingSQLDataArr.length);
-        res.status(201).send(incommingSQLDataArr);
+        console.log(incommingSQLDataArr.length);
+        res.status(200).send(incommingSQLDataArr);
         //}, 1000);  
         console.log('===================================================================');
         
@@ -103,6 +103,8 @@ app.get('/SQLData/NewRecord', (req, res) => {
     inNewRecord = true;
     runSQLConn(buildCorrectSQLStatements('newRecord', ''));
     console.log('nEWrECORD');
+    console.log('106');
+    console.log(incommingSQLDataArr.length);
     setTimeout(() => {
         res.status(201).send(incommingSQLDataArr);
     }, 3000);
