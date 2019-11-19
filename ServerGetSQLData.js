@@ -60,7 +60,7 @@ function runSQLConn(SQLStatement) {
 }
 // Run function for the mehods ================================================================================================
 function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLStatement
-    let statementCols = 'date, month, activity, state, concerned, type, place, content';
+    let statementCols = 'date, activity, state, concerned, type, place, content';
     let settSentNr = 'UPDATE data SET sent = 1 WHERE sent=0';
     
     if (statementType === 'default' && addRecord === false) choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} ORDER BY date DESC`;
