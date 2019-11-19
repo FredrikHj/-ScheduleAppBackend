@@ -42,7 +42,7 @@ function runSQLConn(SQLStatement) {
         
         SQLConn.query(SQLStatement, function (err, sqlResult) {
             console.log('53');
-            //console.log(sqlResult);
+            console.log(sqlResult);
 
             incommingSQLDataArr.push(sqlResult);
 
