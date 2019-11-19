@@ -93,7 +93,7 @@ app.get('/SQLData', (req, res) => {
     setTimeout(()  => {
         console.log('92');
         //console.log(incommingSQLDataArr.length);
-        res.status(201).send(incommingSQLDataArr);
+        res.status(200).send(incommingSQLDataArr);
     }, 1000);  
         console.log('===================================================================');
         
