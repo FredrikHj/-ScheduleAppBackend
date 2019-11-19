@@ -90,11 +90,11 @@ let emtyDataArrays = () => {
 // Get - Default
 app.get('/SQLData', (req, res) => {
     runSQLConn(buildCorrectSQLStatements('default', ''));
-    //setTimeout(() => {
+    setTimeout(()  => {
         console.log('92');
-        console.log(incommingSQLDataArr.length);
-        res.status(200).send(incommingSQLDataArr);
-        //}, 1000);  
+        //console.log(incommingSQLDataArr.length);
+        res.status(201).send(incommingSQLDataArr);
+    }, 1000);  
         console.log('===================================================================');
         
     emtyDataArrays();
@@ -103,11 +103,9 @@ app.get('/SQLData/NewRecord', (req, res) => {
     inNewRecord = true;
     runSQLConn(buildCorrectSQLStatements('newRecord', ''));
     console.log('nEWrECORD');
-    console.log('106');
-    console.log(incommingSQLDataArr.length);
-    setTimeout(() => {
+    //setTimeout(() => {
         res.status(201).send(incommingSQLDataArr);
-    }, 3000);
+    //}, 3000);
     console.log('===================================================================');
     emtyDataArrays();
 });
