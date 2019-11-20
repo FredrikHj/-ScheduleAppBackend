@@ -86,6 +86,24 @@ let emtyDataArrays = () => {
     //Emtying the array at the end
     incommingSQLDataArr = [];
 }
+// Validate users =============================================================================================================
+let validateUser = (incommingUser) => {
+    let userMatch = false;
+    let userList = {
+        userId: 1,
+        fullName: 'Fredrik Hjärpe',
+        userName: 'fredde',
+        userPassWord: 'test'
+    };
+    if (incommingUser.userName === userList.userName && incommingUser.userPassWord === userList.userPassWord) {
+        userMatch = true;
+    }
+    let userReturnData = {
+        loginStatus: userMatch,
+        loginName: userList.fullName
+    }
+    return userReturnData;
+}
 // Run method when requested from client ======================================================================================
 // Get - Default
 app.get('/SQLData', (req, res) => {
@@ -112,14 +130,24 @@ app.get('/SQLData/NewRecord', (req, res) => {
 // AddData 
 app.post('/SQLData/AddRecord', (req, res) => {
     addRecord = true;
-    let currentInData = req.body.formBody;
+    let currentInData = req.body.bodyData;
 
     runSQLConn(buildCorrectSQLStatements('add', currentInData));
     //incommingSQLDataArr.push(currentStatement);
     console.log('===================================================================');
     addRecord = false;
     emtyDataArrays();
-
+});
+app.post('/SQLData/UserValidate', (req, res) => {
+    /* The userdata is incomming and send into he function to be validated:
+        if = true, the code = 200 is send back else the code = 404 is send.
+     */
+    let userData = req.body.bodyData;
+    let returninUserData = validateUser(userData);
+    console.log(returninUserData);
+    
+    if (returninUserData.loginStatus === true)  res.status(200).send(returninUserData.loginName); // User is match
+    if (returninUserData.loginStatus === false) res.status(403).send(); // User is unmatch
 });
     // Run filtering
 /*     app.post('/SQLData/filter', (req, res) => {
