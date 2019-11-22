@@ -42,7 +42,7 @@ function runSQLConn(SQLStatement) {
         
         SQLConn.query(SQLStatement, function (err, sqlResult) {
             console.log('53');
-            console.log(sqlResult);
+            //console.log(sqlResult);
 
             incommingSQLDataArr.push(sqlResult);
 
@@ -99,6 +99,7 @@ let validateUser = (incommingUser) => {
         userMatch = true;
     }
     let userReturnData = {
+        userId: userList.userId,
         loginStatus: userMatch,
         loginName: userList.fullName
     }
@@ -143,10 +144,12 @@ app.post('/SQLData/UserValidate', (req, res) => {
         if = true, the code = 200 is send back else the code = 404 is send.
      */
     let userData = req.body.bodyData;
+    console.log(userData);
+    
     let returninUserData = validateUser(userData);
     console.log(returninUserData);
-    
-    if (returninUserData.loginStatus === true)  res.status(200).send(returninUserData.loginName); // User is match
+
+    if (returninUserData.loginStatus === true)  res.status(200).send(returninUserData); // User is match
     if (returninUserData.loginStatus === false) res.status(403).send(); // User is unmatch
 });
     // Run filtering
