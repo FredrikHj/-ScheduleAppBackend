@@ -118,9 +118,10 @@ app.get('/SQLData', (req, res) => {
         
     emtyDataArrays();
 });
-app.get('/SQLData/NewRecord', (req, res) => {
+app.get('/SQLData/:id', (req, res) => {
     inNewRecord = true;
-    runSQLConn(buildCorrectSQLStatements('newRecord', ''));
+    let getInlogedUser = req.params.id;
+    //runSQLConn(buildCorrectSQLStatements('newRecord', ''));
     console.log('nEWrECORD');
     //setTimeout(() => {
         res.status(201).send(incommingSQLDataArr);
