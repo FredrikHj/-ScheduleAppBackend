@@ -43,22 +43,17 @@ function runSQLConn(SQLStatement) {
         SQLConn.query(SQLStatement, function (err, sqlResult) {
             console.log('53');
             //console.log(sqlResult);
-
-            incommingSQLDataArr.push(sqlResult);
-
-  
+            incommingSQLDataArr.push(sqlResult)
             if (err) {
                 //SQLConn.release();
                 return;
             }
-            
         });
         SQLConn.end();
-
     });
-    
 }
-// Run function for the mehods ================================================================================================
+/* Run function for the mehods ================================================================================================
+  Function to choose correct statement according the inomming data */
 function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLStatement
     let statementCols = 'date, activity, state, concerned, type, place, content';
     let settSentNr = 'UPDATE data SET sent = 1 WHERE sent=0';
@@ -86,7 +81,9 @@ let emtyDataArrays = () => {
     //Emtying the array at the end
     incommingSQLDataArr = [];
 }
-// Validate users =============================================================================================================
+/* Validate users =============================================================================================================
+    Validate the user who whants logging in
+*/
 let validateUser = (incommingUser) => {
     let userMatch = false;
     let userList = {
@@ -153,29 +150,9 @@ app.post('/SQLData/UserValidate', (req, res) => {
     if (returninUserData.loginStatus === true)  res.status(200).send(returninUserData); // User is match
     if (returninUserData.loginStatus === false) res.status(403).send(); // User is unmatch
 });
-    // Run filtering
-/*     app.post('/SQLData/filter', (req, res) => {
-        if (incommingSQLDataArr.length = 2) {
-            incommingSQLDataArr = [];
-        }
+// Run filtering
+app.post('/SQLData/filter', (req, res) => {
+    
 
-        let currentInData = req.body.SQLStatementsObj;
-        console.log(currentStatement);
-        let incommingSQLData = {
-            statementType: currentInData.filterType,
-            currentStatement: currentInData
-        }
-        //defaultSQL+= incommingSQLData;
-
-        console.log('79'); 
-        runSQLConn(incommingSQLData.length); 
-        console.log('69'); 
-        //console.log(incommingSQLDataArr[1].length);
-        
-        setTimeout(() => {
-            res.status(201).send(incommingSQLDataArr);
-        }, 1000);
-        console.log('===================================================================');
-
-    }); */
+});
 // ============================================================================================================================
