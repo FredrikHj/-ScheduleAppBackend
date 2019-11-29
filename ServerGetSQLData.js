@@ -60,11 +60,11 @@ function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLSt
     
     if (statementType === 'default' && addRecord === false) choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} ORDER BY date DESC`;
     // Fortsätt här imorgon
-    if (statementType === 'newRecord' && inNewRecord === true) {
+    /* if (statementType === 'userSpec' && inNewRecord === true) {
         console.log('2x statements');
         
-        choosenStatement = `SELECT sent, ${ statementCols } FROM data WHERE sent=0 ORDER BY date DESC; ${settSentNr}`;
-    }
+        choosenStatement = `SELECT sent, ${ statementCols } FROM data WHERE userID=${ SQLObj.inlogedUser } ORDER BY date DESC; ${settSentNr}`;
+    } */
     if (statementType === 'add' && addRecord === true) {
         let statementInsertIntoData = `('${ SQLObj.join("','")}');`;
         choosenStatement = `INSERT INTO ${ backConfig.SQLTable} (sent, ${ statementCols }) VALUES${ statementInsertIntoData}`;  
@@ -111,15 +111,17 @@ app.get('/SQLData', (req, res) => {
         //console.log(incommingSQLDataArr.length);
         res.status(200).send(incommingSQLDataArr);
     }, 1000);  
-        console.log('===================================================================');
+        console.log('=========================userSpec==========================================');
         
     emtyDataArrays();
 });
 app.get('/SQLData/:id', (req, res) => {
     inNewRecord = true;
     let getInlogedUser = req.params.id;
-    //runSQLConn(buildCorrectSQLStatements('newRecord', ''));
-    console.log('nEWrECORD');
+    console.log('121');
+
+    console.log(getInlogedUser);
+    //runSQLConn(buildCorrectSQLStatements('', ''));
     //setTimeout(() => {
         res.status(201).send(incommingSQLDataArr);
     //}, 3000);
