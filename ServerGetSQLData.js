@@ -55,21 +55,21 @@ function runSQLConn(SQLStatement) {
 /* Run function for the mehods ================================================================================================
   Function to choose correct statement according the inomming data */
 function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLStatement
+
     let statementCols = 'date, activity, state, concerned, type, place, content';
     let settSentNr = 'UPDATE data SET sent = 1 WHERE sent=0';
     
     if (statementType === 'default' && addRecord === false) choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} ORDER BY date DESC`;
-    // Fortsätt här imorgon
-    /* if (statementType === 'userSpec' && inNewRecord === true) {
-        console.log('2x statements');
-        
-        choosenStatement = `SELECT sent, ${ statementCols } FROM data WHERE userID=${ SQLObj.inlogedUser } ORDER BY date DESC; ${settSentNr}`;
-    } */
+
     if (statementType === 'add' && addRecord === true) {
         let statementInsertIntoData = `('${ SQLObj.join("','")}');`;
         choosenStatement = `INSERT INTO ${ backConfig.SQLTable} (sent, ${ statementCols }) VALUES${ statementInsertIntoData}`;  
     }
-    if (statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
+    if (statementType === 'userSpec') {
+        choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} WHERE userID=${ SQLObj } ORDER BY date DESC`;
+    }
+
+    //if (statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     
     currentStatement = choosenStatement;
     console.log('84');
@@ -119,13 +119,11 @@ app.get('/SQLData/:id', (req, res) => {
     inNewRecord = true;
     let getInlogedUser = req.params.id;
     console.log('121');
-
     console.log(getInlogedUser);
-    //runSQLConn(buildCorrectSQLStatements('', ''));
+    runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
     //setTimeout(() => {
         res.status(201).send(incommingSQLDataArr);
     //}, 3000);
-    console.log('===================================================================');
     emtyDataArrays();
 });
 // AddData 
