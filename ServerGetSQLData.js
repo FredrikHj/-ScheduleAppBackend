@@ -117,13 +117,17 @@ app.get('/SQLData', (req, res) => {
 });
 app.get('/SQLData/:id', (req, res) => {
     inNewRecord = true;
-    let getInlogedUser = req.params.id;
+    let getInlogedUser = parseInt(req.params.id);
     console.log('121');
     console.log(getInlogedUser);
     runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
-    //setTimeout(() => {
-        res.status(201).send(incommingSQLDataArr);
-    //}, 3000);
+    
+    setTimeout(() => {
+        console.log('126');
+        
+        console.log(incommingSQLDataArr);
+        res.status(200).send(incommingSQLDataArr);
+    }, 3000);
     emtyDataArrays();
 });
 // AddData 
