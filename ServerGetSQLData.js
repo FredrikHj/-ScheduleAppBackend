@@ -2,8 +2,15 @@
 const express = require('express');
 const app = express();
 let cors = require('cors');
+const fileSystem = require('fs');
+
+//Config for the backend
 const backConfig = require('./backConfig.json');
 
+// All the accessable users for the app
+let regedUsers = require('./RegedUser.json');
+
+// The server information
 const port = process.env.PORT || backConfig.serverPort;
 let serverIO = app.listen(port, () => console.log(`getSQLData is listening on port ${port}!`));
 
@@ -18,6 +25,7 @@ let defaultStatement = `SELECT * FROM ${backConfig.SQLTable}`;
 let addRecord = false;
 let inNewRecord = false;
 let count = 0;
+let countRegedUser = 0;
 let incommingSQLDataArr = [];
 let currentStatement = '';
 let choosenStatement = '';
@@ -85,20 +93,18 @@ let emtyDataArrays = () => {
     Validate the user who whants logging in
 */
 let validateUser = (incommingUser) => {
+    let userReturnData = {};
     let userMatch = false;
-    let userList = {
-        userId: 1,
-        fullName: 'Fredrik Hjärpe',
-        userName: 'fredde',
-        userPassWord: 'test'
-    };
-    if (incommingUser.userName === userList.userName && incommingUser.userPassWord === userList.userPassWord) {
+    console.log('95');
+    console.log(regedUsers);
+    
+    if (incommingUser.userName === regedUsers.userName && incommingUser.userPassWord === regedUsers.userPassWord) {
         userMatch = true;
-    }
-    let userReturnData = {
-        userId: userList.userId,
-        loginStatus: userMatch,
-        loginName: userList.fullName
+        userReturnData = {
+            userId: userList.userId,
+            loginStatus: userMatch,
+            loginName: regedUsers.fullName
+        }
     }
     return userReturnData;
 }
@@ -107,7 +113,7 @@ let validateUser = (incommingUser) => {
 app.get('/SQLData', (req, res) => {
     runSQLConn(buildCorrectSQLStatements('default', ''));
     setTimeout(()  => {
-        console.log('92');
+        console.log('111');
         //console.log(incommingSQLDataArr.length);
         res.status(200).send(incommingSQLDataArr);
     }, 1000);  
@@ -130,7 +136,7 @@ app.get('/SQLData/:id', (req, res) => {
     }, 3000);
     emtyDataArrays();
 });
-// AddData 
+// AddSQLData & RegUsers ============================================================
 app.post('/SQLData/AddRecord', (req, res) => {
     addRecord = true;
     let currentInData = req.body.bodyData;
@@ -141,6 +147,34 @@ app.post('/SQLData/AddRecord', (req, res) => {
     addRecord = false;
     emtyDataArrays();
 });
+// UserReg
+app.post('/SQLData/UserReg', (req, res) => {
+    addRecord = true;
+    console.log('152');
+    
+    let currentInData = req.body.bodyData;
+    console.log(currentInData);
+
+    let newIncommingUser = {
+        [currentInData.userName]: {
+            userId: currentInData.id,
+            fullName: currentInData.userFullName,
+            userName: currentInData.userName,
+            userPassWord: currentInData.userPwd
+        }
+    };
+   /*  fileSystem.writeFile(`./RegUsers/Reg_${currentInData}.json`, JSON.stringify(newIncommingUser //debugging  
+             , null, 2
+        ), function(err) {console.log(err);     
+    }); */
+console.log(newIncommingUser);
+
+    console.log('===================================================================');
+    addRecord = false;
+    emtyDataArrays();
+});
+// =================================================================================
+// UserValidation
 app.post('/SQLData/UserValidate', (req, res) => {
     /* The userdata is incomming and send into he function to be validated:
         if = true, the code = 200 is send back else the code = 404 is send.
@@ -159,4 +193,5 @@ app.post('/SQLData/filter', (req, res) => {
     
 
 });
+
 // ============================================================================================================================
