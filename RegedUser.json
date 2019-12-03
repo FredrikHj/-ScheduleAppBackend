@@ -1,3 +1,10 @@
 {
-  "regedUser": []
+  "regedUser": [
+    {
+      "userId": 1,
+      "fullName": "Fredrik Hjärpe",
+      "userName": "fredde",
+      "userPassWord": "test"
+    }
+  ]
 }

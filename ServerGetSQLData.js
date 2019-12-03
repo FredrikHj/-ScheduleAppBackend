@@ -44,7 +44,7 @@ let userId  = () => {
 let userReg = (userBody) => {
     console.log('94');
     console.log(userBody);
-
+0
     let regedUser = {
         userId: userId(),
         fullName: userBody.fullName,
@@ -123,19 +123,30 @@ let emtyDataArrays = () => {
 }
 // Validate the user who whants logging in
 let validateUser = (incommingUser) => {
+    let getFullName = '';
     let userReturnData = {};
-    let userMatch = false;
-    console.log('95');
-    console.log(regedUsers);
+    let isUserMatch = false;
     
-    if (incommingUser.userName === regedUsers.userName && incommingUser.userPassWord === regedUsers.userPassWord) {
-        userMatch = true;
-        userReturnData = {
-            userId: userList.userId,
-            loginStatus: userMatch,
-            loginName: regedUsers.fullName
+    let userList = regedUserList['regedUser'];
+    console.log('95');
+    console.log(incommingUser);
+    
+    // Check the userList for a userName vs password match
+    for (let index = 0; index < userList.length; index++) {
+        const getUsername = userList[index].userName;
+        const getPassword = userList[index].userPassWord;
+        // Check if there are any match with a reged user
+        if (getUsername === incommingUser.userName && getPassword === incommingUser.userPassWord) {
+            userReturnData = {
+                userId: userId(),
+                userMatch: true,
+                loginName: userList[index].fullName
+            }
         }
+        if (getUsername === incommingUser.userName || getPassword === incommingUser.userPassWord) isUserMatch = false;
     }
+
+    
     return userReturnData;
 }
 // Run method when requested from client ======================================================================================
@@ -198,10 +209,12 @@ app.post('/SQLData/UserValidate', (req, res) => {
     console.log(incommingUserData);
     
     let returninUserData = validateUser(incommingUserData);
+    console.log('214');
+    
     console.log(returninUserData);
 
-    if (returninUserData.loginStatus === true)  res.status(200).send(returninUserData); // User is match
-    if (returninUserData.loginStatus === false) res.status(403).send(); // User is unmatch
+    if (returninUserData.userMatch === true)  res.status(200).send(returninUserData); // User is match
+    if (returninUserData === {}) res.status(403).send(); // User is unmatch
 });
 // Run filtering
 app.post('/SQLData/filter', (req, res) => {
