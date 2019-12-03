@@ -7,9 +7,6 @@ const fileSystem = require('fs');
 //Config for the backend
 const backConfig = require('./backConfig.json');
 
-// All the accessable users for the app
-let regedUsers = require('./RegedUser.json');
-
 // The server information
 const port = process.env.PORT || backConfig.serverPort;
 let serverIO = app.listen(port, () => console.log(`getSQLData is listening on port ${port}!`));
@@ -30,6 +27,41 @@ let incommingSQLDataArr = [];
 let currentStatement = '';
 let choosenStatement = '';
 
+// All the accessable users for the app
+let regedUserList = require('./RegedUser.json');
+
+// ============================ Create a user ============================
+//Create id
+let userId  = () => { 
+    for (let index = 0; index < regedUserList.regedUser.length; index++) {
+        countRegedUser = regedUserList.regedUser[index].userId;
+    }
+    // Get the last id in my arr of users and add by one
+    countRegedUser++;    
+    return countRegedUser;
+}
+// Reg a user
+let userReg = (userBody) => {
+    console.log('94');
+    console.log(userBody);
+
+    let regedUser = {
+        userId: userId(),
+        fullName: userBody.fullName,
+        userName: userBody.userName,
+        userPassWord: userBody.userPassWord
+
+    };
+    regedUserList['regedUser'].push(regedUser);
+    console.log(regedUserList);
+    
+    fileSystem.writeFile('./RegedUser.json', JSON.stringify(regedUserList //debugging  
+             , null, 2
+        ), function(err) {console.log(err);     
+    });
+
+};
+// ======================= SQL Part ================================================================================================
 function runSQLConn(SQLStatement) {
     count++;
     // Creates a connection between the server and my client and listen for SQL changes¨
@@ -61,14 +93,14 @@ function runSQLConn(SQLStatement) {
     });
 }
 /* Run function for the mehods ================================================================================================
-  Function to choose correct statement according the inomming data */
+Function to choose correct statement according the inomming data */
 function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLStatement
-
+    
     let statementCols = 'date, activity, state, concerned, type, place, content';
     let settSentNr = 'UPDATE data SET sent = 1 WHERE sent=0';
     
     if (statementType === 'default' && addRecord === false) choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} ORDER BY date DESC`;
-
+    
     if (statementType === 'add' && addRecord === true) {
         let statementInsertIntoData = `('${ SQLObj.join("','")}');`;
         choosenStatement = `INSERT INTO ${ backConfig.SQLTable} (sent, ${ statementCols }) VALUES${ statementInsertIntoData}`;  
@@ -76,7 +108,7 @@ function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLSt
     if (statementType === 'userSpec') {
         choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} WHERE userID=${ SQLObj } ORDER BY date DESC`;
     }
-
+    
     //if (statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     
     currentStatement = choosenStatement;
@@ -89,9 +121,7 @@ let emtyDataArrays = () => {
     //Emtying the array at the end
     incommingSQLDataArr = [];
 }
-/* Validate users =============================================================================================================
-    Validate the user who whants logging in
-*/
+// Validate the user who whants logging in
 let validateUser = (incommingUser) => {
     let userReturnData = {};
     let userMatch = false;
@@ -147,27 +177,12 @@ app.post('/SQLData/AddRecord', (req, res) => {
     addRecord = false;
     emtyDataArrays();
 });
-// UserReg
+// UserReg =========================================================================
 app.post('/SQLData/UserReg', (req, res) => {
     addRecord = true;
     console.log('152');
-    
-    let currentInData = req.body.bodyData;
-    console.log(currentInData);
+    userReg(req.body.bodyData);
 
-    let newIncommingUser = {
-        [currentInData.userName]: {
-            userId: currentInData.id,
-            fullName: currentInData.userFullName,
-            userName: currentInData.userName,
-            userPassWord: currentInData.userPwd
-        }
-    };
-   /*  fileSystem.writeFile(`./RegUsers/Reg_${currentInData}.json`, JSON.stringify(newIncommingUser //debugging  
-             , null, 2
-        ), function(err) {console.log(err);     
-    }); */
-console.log(newIncommingUser);
 
     console.log('===================================================================');
     addRecord = false;
@@ -179,10 +194,10 @@ app.post('/SQLData/UserValidate', (req, res) => {
     /* The userdata is incomming and send into he function to be validated:
         if = true, the code = 200 is send back else the code = 404 is send.
      */
-    let userData = req.body.bodyData;
-    console.log(userData);
+    let incommingUserData = req.body.bodyData;
+    console.log(incommingUserData);
     
-    let returninUserData = validateUser(userData);
+    let returninUserData = validateUser(incommingUserData);
     console.log(returninUserData);
 
     if (returninUserData.loginStatus === true)  res.status(200).send(returninUserData); // User is match
