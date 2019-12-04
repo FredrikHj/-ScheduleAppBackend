@@ -42,9 +42,9 @@ let userId  = () => {
 }
 // Reg a user
 let userReg = (userBody) => {
-    console.log('94');
+    console.log('46');
     console.log(userBody);
-0
+
     let regedUser = {
         userId: userId(),
         fullName: userBody.fullName,
@@ -77,11 +77,11 @@ function runSQLConn(SQLStatement) {
     console.log("Ansluten till DB :)");
     SQLConn.connect(function(err) { 
         if (err) throw err;
-        console.log('51');
+        console.log('81');
         console.log(SQLStatement);
         
         SQLConn.query(SQLStatement, function (err, sqlResult) {
-            console.log('53');
+            console.log('85');
             //console.log(sqlResult);
             incommingSQLDataArr.push(sqlResult)
             if (err) {
@@ -112,7 +112,7 @@ function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLSt
     //if (statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     
     currentStatement = choosenStatement;
-    console.log('84');
+    console.log('116');
     console.log(currentStatement);
     
     return currentStatement;
@@ -124,11 +124,10 @@ let emtyDataArrays = () => {
 // Validate the user who whants logging in
 let validateUser = (incommingUser) => {
     let getFullName = '';
-    let userReturnData = {};
-    let isUserMatch = false;
+    let userReturnData = {userMatch: false};
     
     let userList = regedUserList['regedUser'];
-    console.log('95');
+    console.log('130');
     console.log(incommingUser);
     
     // Check the userList for a userName vs password match
@@ -154,7 +153,7 @@ let validateUser = (incommingUser) => {
 app.get('/SQLData', (req, res) => {
     runSQLConn(buildCorrectSQLStatements('default', ''));
     setTimeout(()  => {
-        console.log('111');
+        console.log('156');
         //console.log(incommingSQLDataArr.length);
         res.status(200).send(incommingSQLDataArr);
     }, 1000);  
@@ -170,8 +169,7 @@ app.get('/SQLData/:id', (req, res) => {
     runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
     
     setTimeout(() => {
-        console.log('126');
-        
+        console.log('173');        
         console.log(incommingSQLDataArr);
         res.status(200).send(incommingSQLDataArr);
     }, 3000);
@@ -191,7 +189,7 @@ app.post('/SQLData/AddRecord', (req, res) => {
 // UserReg =========================================================================
 app.post('/SQLData/UserReg', (req, res) => {
     addRecord = true;
-    console.log('152');
+    console.log('192');
     userReg(req.body.bodyData);
 
 
@@ -209,12 +207,18 @@ app.post('/SQLData/UserValidate', (req, res) => {
     console.log(incommingUserData);
     
     let returninUserData = validateUser(incommingUserData);
-    console.log('214');
+    console.log('210');
     
     console.log(returninUserData);
 
-    if (returninUserData.userMatch === true)  res.status(200).send(returninUserData); // User is match
-    if (returninUserData === {}) res.status(403).send(); // User is unmatch
+    if (returninUserData.userMatch === true) {
+        res.statusMessage = "Du har loggats in :)";
+        res.status(200).send(returninUserData); // User is match
+    }
+    if (returninUserData.userMatch === false) {
+        res.statusMessage = "Användaren finns inte!";
+        res.status(203).send(); // User is unmatch
+    }
 });
 // Run filtering
 app.post('/SQLData/filter', (req, res) => {
