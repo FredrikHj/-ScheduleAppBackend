@@ -204,6 +204,8 @@ app.post('/SQLData/UserValidate', (req, res) => {
         if = true, the code = 200 is send back else the code = 404 is send.
      */
     let incommingUserData = req.body.bodyData;
+    console.log('207');
+    
     console.log(incommingUserData);
     
     let returninUserData = validateUser(incommingUserData);
