@@ -142,7 +142,7 @@ let validateUser = (incommingUser) => {
                 loginName: userList[index].fullName
             }
         }
-        if (getUsername === incommingUser.userName || getPassword === incommingUser.userPassWord) isUserMatch = false;
+        if (getUsername === incommingUser.userName || getPassword === incommingUser.userPassWord) userReturnData.isUserMatch = false;
     }
 
     
@@ -221,6 +221,7 @@ app.post('/SQLData/UserValidate', (req, res) => {
         res.statusMessage = "Användaren finns inte!";
         res.status(203).send(); // User is unmatch
     }
+    returninUserData = {};
 });
 // Run filtering
 app.post('/SQLData/filter', (req, res) => {
