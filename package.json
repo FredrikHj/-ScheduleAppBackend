@@ -11,5 +11,8 @@
     "socket.io": "^2.3.0"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "scripts": {
+    "server": "npx nodemon ServerGetSQLData.js"
+  }
 }

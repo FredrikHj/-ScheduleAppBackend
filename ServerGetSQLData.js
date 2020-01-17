@@ -63,6 +63,8 @@ let userReg = (userBody) => {
 };
 // ======================= SQL Part ================================================================================================
 function runSQLConn(SQLStatement) {
+    console.log(`66 - ${SQLStatement}`);
+    
     count++;
     // Creates a connection between the server and my client and listen for SQL changes¨
     //let SQLConn = mysql.createConnection([{multipleStatements: true}, 'mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2']);
@@ -151,7 +153,7 @@ let validateUser = (incommingUser) => {
 // Run method when requested from client ======================================================================================
 // Get - Default
 app.get('/SQLData', (req, res) => {
-    runSQLConn(buildCorrectSQLStatements('default', ''));
+    runSQLConn(buildCorrectSQLStatements('default', ''), 'default');
     setTimeout(()  => {
         console.log('156');
         //console.log(incommingSQLDataArr.length);
