@@ -2,6 +2,9 @@
 const express = require('express');
 const app = express();
 let cors = require('cors');
+
+// Module for handle the user logins
+let jwt = require('jsonwebtoken');
 const fileSystem = require('fs');
 
 //Config for the backend
@@ -33,6 +36,7 @@ let regedUserList = require('./RegedUser.json');
 // ============================ Create a user ============================
 //Create id
 let userId  = () => { 
+    //Note - When calling this function I need set the id value = -1 able starting the user id from nr 1 -->
     for (let index = 0; index < regedUserList.regedUser.length; index++) {
         countRegedUser = regedUserList.regedUser[index].userId;
     }
@@ -63,9 +67,9 @@ let userReg = (userBody) => {
 };
 // ======================= SQL Part ================================================================================================
 function runSQLConn(SQLStatement) {
-    console.log(`66 - ${SQLStatement}`);
-    
+    incommingSQLDataArr = [];
     count++;
+    console.log(`Körning - ${count}`);
     // Creates a connection between the server and my client and listen for SQL changes¨
     //let SQLConn = mysql.createConnection([{multipleStatements: true}, 'mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2']);
     let SQLConn = mysql.createConnection({
@@ -78,10 +82,7 @@ function runSQLConn(SQLStatement) {
     });
     console.log("Ansluten till DB :)");
     SQLConn.connect(function(err) { 
-        if (err) throw err;
-        console.log('81');
-        console.log(SQLStatement);
-        
+        if (err) throw err;        
         SQLConn.query(SQLStatement, function (err, sqlResult) {
             console.log('85');
             //console.log(sqlResult);
@@ -97,18 +98,18 @@ function runSQLConn(SQLStatement) {
 /* Run function for the mehods ================================================================================================
 Function to choose correct statement according the inomming data */
 function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLStatement
+    let statementCols = 'date, activity, state, concerned, type, place, content';    
+
+    if (statementType === 'first run') choosenStatement = `SELECT * FROM ${backConfig.SQLTable} ORDER BY date DESC`;
     
-    let statementCols = 'date, activity, state, concerned, type, place, content';
-    let settSentNr = 'UPDATE data SET sent = 1 WHERE sent=0';
-    
-    if (statementType === 'default' && addRecord === false) choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} ORDER BY date DESC`;
-    
-    if (statementType === 'add' && addRecord === true) {
+    if (statementType === 'addRecord') {
         let statementInsertIntoData = `('${ SQLObj.join("','")}');`;
         choosenStatement = `INSERT INTO ${ backConfig.SQLTable} (sent, ${ statementCols }) VALUES${ statementInsertIntoData}`;  
     }
+
+
     if (statementType === 'userSpec') {
-        choosenStatement = `SELECT ${ statementCols } FROM ${backConfig.SQLTable} WHERE userID=${ SQLObj } ORDER BY date DESC`;
+        choosenStatement = `SELECT * FROM ${backConfig.SQLTable} WHERE userName=${ SQLObj } ORDER BY date DESC`;
     }
     
     //if (statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
@@ -119,9 +120,9 @@ function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLSt
     
     return currentStatement;
 }
-let emtyDataArrays = () => {
+let emtyDataArrays = (emtyingArr) => {
     //Emtying the array at the end
-    incommingSQLDataArr = [];
+    emtyingArr = [];
 }
 // Validate the user who whants logging in
 let validateUser = (incommingUser) => {
@@ -139,50 +140,61 @@ let validateUser = (incommingUser) => {
         // Check if there are any match with a reged user
         if (getUsername === incommingUser.userName && getPassword === incommingUser.userPassWord) {
             userReturnData = {
-                userId: userId(),
+                userId: userId()-1,
                 userMatch: true,
                 loginName: userList[index].fullName
             }
         }
         if (getUsername === incommingUser.userName || getPassword === incommingUser.userPassWord) userReturnData.isUserMatch = false;
     }
-
-    
     return userReturnData;
 }
+
 // Run method when requested from client ======================================================================================
 // Get - Default
 app.get('/SQLData', (req, res) => {
-    runSQLConn(buildCorrectSQLStatements('default', ''), 'default');
+    runSQLConn(buildCorrectSQLStatements('first run', '')); 
     setTimeout(()  => {
-        console.log('156');
-        //console.log(incommingSQLDataArr.length);
         res.status(200).send(incommingSQLDataArr);
     }, 1000);  
         console.log('=========================userSpec==========================================');
-        
-    emtyDataArrays();
 });
-app.get('/SQLData/:id', (req, res) => {
+app.get('/SQLData/:user', (req, res) => {
     inNewRecord = true;
-    let getInlogedUser = parseInt(req.params.id);
-    console.log('121');
-    console.log(getInlogedUser);
-    runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
+    let getInlogedUser = req.params.user;
+    console.log(`166 - ${getInlogedUser}`);
+
+    //runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
     
     setTimeout(() => {
         console.log('173');        
-        console.log(incommingSQLDataArr);
-        res.status(200).send(incommingSQLDataArr);
+        console.log(sendCorrectUserData());
+        res.status(200).send(sendCorrectUserData(getInlogedUser));
     }, 3000);
-    emtyDataArrays();
 });
+let sendCorrectUserData = (getInlogedUser) => {  
+    let getCorrectUserData = [];  
+    incommingSQLDataArr.map((obj) => {
+        for (const key in obj) {
+            if (obj[key].userName === getInlogedUser) {
+                getCorrectUserData.push(obj[key]);
+            }
+        }
+        return getCorrectUserData;
+    });
+    console.log('242');
+    
+    console.log(getCorrectUserData);
+    
+    return getCorrectUserData;
+}
+
 // AddSQLData & RegUsers ============================================================
 app.post('/SQLData/AddRecord', (req, res) => {
     addRecord = true;
     let currentInData = req.body.bodyData;
 
-    runSQLConn(buildCorrectSQLStatements('add', currentInData));
+    runSQLConn(buildCorrectSQLStatements('addRecord', currentInData));
     //incommingSQLDataArr.push(currentStatement);
     console.log('===================================================================');
     addRecord = false;
@@ -192,6 +204,8 @@ app.post('/SQLData/AddRecord', (req, res) => {
 app.post('/SQLData/UserReg', (req, res) => {
     addRecord = true;
     console.log('192');
+    console.log(req.body.bodyData);
+    
     userReg(req.body.bodyData);
 
 
@@ -207,13 +221,14 @@ app.post('/SQLData/UserValidate', (req, res) => {
      */
     let incommingUserData = req.body.bodyData;
     console.log('207');
-    
     console.log(incommingUserData);
-    
+
     let returninUserData = validateUser(incommingUserData);
+
     console.log('210');
     
-    console.log(returninUserData);
+    let loginAs = returninUserData.loginName;
+    console.log(`221 ${loginAs}`);
 
     if (returninUserData.userMatch === true) {
         res.statusMessage = "Du har loggats in :)";
@@ -221,7 +236,7 @@ app.post('/SQLData/UserValidate', (req, res) => {
     }
     if (returninUserData.userMatch === false) {
         res.statusMessage = "Användaren finns inte!";
-        res.status(203).send(); // User is unmatch
+        res.status(203).send(null); // User is unmatch
     }
     returninUserData = {};
 });
