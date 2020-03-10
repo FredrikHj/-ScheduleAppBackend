@@ -29,7 +29,6 @@ let incommingSQLDataArr = [];
 let currentStatement = '';
 let choosenStatement = '';
 
-l
 // The server information
 const port = process.env.PORT || SQLConfig.serverPort;
 let serverIO = app.listen(port, () => console.log(`getSQLData is listening on port ${port}!`));
@@ -92,7 +91,7 @@ function runSQLConn(SQLStatement) {
                 //SQLConn.release();
                 return;
             }
-        });
+        }); 
         SQLConn.end();
     });
 }
@@ -139,14 +138,13 @@ let validateUser = (incommingUser) => {
         const getUsername = userList[index].userName;
         const getPassword = userList[index].userPassWord;
         // Check if there are any match with a reged user
-        if (getUsername === incommingUser.userName && getPassword === incommingUser.userPassWord) {
+        if (incommingUser.userName === getUsername && incommingUser.userPassWord === getPassword) {
             userReturnData = {
                 userId: userId()-1,
                 userMatch: true,
                 loginName: userList[index].fullName
             }
         }
-        if (getUsername === incommingUser.userName || getPassword === incommingUser.userPassWord) userReturnData.isUserMatch = false;
     }
     return userReturnData;
 }
@@ -154,7 +152,7 @@ let validateUser = (incommingUser) => {
 // Run method when requested from client ======================================================================================
 // Get - Default
 app.get('/SQLData', (req, res) => {
-    runSQLConn(buildCorrectSQLStatements('first run', '')); 
+    //runSQLConn(buildCorrectSQLStatements('first run', '')); 
     setTimeout(()  => {
         res.status(200).send(incommingSQLDataArr);
     }, 1000);  
@@ -216,25 +214,26 @@ app.post('/SQLData/UserReg', (req, res) => {
 });
 // =================================================================================
 // UserValidation
-app.post('/SQLData/UserValidate', (req, res) => {
+app.post('/SQLData/Login', (req, res) => {
     /* The userdata is incomming and send into he function to be validated:
         if = true, the code = 200 is send back else the code = 404 is send.
      */
-    let incommingUserData = req.body.bodyData;
-    console.log('207');
-    console.log(incommingUserData);
+     let incommingUserData = req.body.bodyData;
+     console.log("incommingUserData", incommingUserData)
+     let returninUserData = validateUser(incommingUserData);
+     console.log("returninUserData -225", returninUserData)
+     
+     if (returninUserData.userMatch === true) {
+         
+        jwt.sign(returninUserData, 'inlogSecretKey', (error, token) => {
+             console.log("token", token)
+             
+             res.statusMessage = "Du har loggats in :)";
+             res.status(200).send(token); // User is match
+             
+        });        
+     }    
 
-    let returninUserData = validateUser(incommingUserData);
-
-    console.log('210');
-    
-    let loginAs = returninUserData.loginName;
-    console.log(`221 ${loginAs}`);
-
-    if (returninUserData.userMatch === true) {
-        res.statusMessage = "Du har loggats in :)";
-        res.status(200).send(returninUserData); // User is match
-    }
     if (returninUserData.userMatch === false) {
         res.statusMessage = "Användaren finns inte!";
         res.status(203).send(null); // User is unmatch
