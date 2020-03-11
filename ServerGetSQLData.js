@@ -9,15 +9,8 @@ app.use(cors());
 
 //SQL Config
 var mysql = require('mysql');
-const SQLConfig = require('./SQLConfig.json');
-let SQLConn = mysql.createConnection({
-    host: SQLConfig.host,
-    user: SQLConfig.user,
-    password: SQLConfig.password,
-    port: SQLConfig.sqlPort,
-    database: SQLConfig.database,
-    multipleStatements: SQLConfig.multipleStatements,
-});
+const SQLConfig = require('./SQLConfig');
+const routes = require('./Routes');
 
 // Declaring variables
 let defaultStatement = `SELECT * FROM ${SQLConfig.SQLTable}`;
@@ -81,6 +74,14 @@ function runSQLConn(SQLStatement) {
     //let SQLConn = mysql.createConnection([{multipleStatements: true}, 'mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2']);
 
     console.log("Ansluten till DB :)");
+    let SQLConn = mysql.createConnection({
+        host: SQLConfig.host,
+        user: SQLConfig.user,
+        password: SQLConfig.password,
+        port: SQLConfig.sqlPort,
+        database: SQLConfig.database,
+        multipleStatements: SQLConfig.multipleStatements,
+    });
     SQLConn.connect(function(err) { 
         if (err) throw err;        
         SQLConn.query(SQLStatement, function (err, sqlResult) {
@@ -152,7 +153,7 @@ let validateUser = (incommingUser) => {
 // Run method when requested from client ======================================================================================
 // Get - Default
 app.get('/SQLData', (req, res) => {
-    //runSQLConn(buildCorrectSQLStatements('first run', '')); 
+    runSQLConn(buildCorrectSQLStatements('first run', '')); 
     setTimeout(()  => {
         res.status(200).send(incommingSQLDataArr);
     }, 1000);  
@@ -186,7 +187,7 @@ let sendCorrectUserData = (getInlogedUser) => {
     console.log(getCorrectUserData);
     
     return getCorrectUserData;
-}
+} 
 
 // AddSQLData & RegUsers ============================================================
 app.post('/SQLData/AddRecord', (req, res) => {
