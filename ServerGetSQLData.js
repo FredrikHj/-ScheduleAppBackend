@@ -1,3 +1,8 @@
+// Import functions
+const SQLFunction = require('./SQLFunction');
+
+const SQLConfig = require('./SQLConfig');
+
 // Basic Server module
 const express = require('express');
 let jwt = require('jsonwebtoken');
@@ -7,20 +12,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-//SQL Config
-var mysql = require('mysql');
-const SQLConfig = require('./SQLConfig');
-const routes = require('./Routes');
-
-// Declaring variables
-let defaultStatement = `SELECT * FROM ${SQLConfig.SQLTable}`;
 let addRecord = false;
 let inNewRecord = false;
-let count = 0;
 let countRegedUser = 0;
-let incommingSQLDataArr = [];
-let currentStatement = '';
-let choosenStatement = '';
 
 // The server information
 const port = process.env.PORT || SQLConfig.serverPort;
@@ -54,82 +48,29 @@ let userReg = (userBody) => {
         fullName: userBody.fullName,
         userName: userBody.userName,
         userPassWord: userBody.userPassWord
-
+        
     };
     regedUserList['regedUser'].push(regedUser);
     console.log(regedUserList);
     
     fileSystem.writeFile('./RegedUser.json', JSON.stringify(regedUserList //debugging  
-             , null, 2
+        , null, 2
         ), function(err) {console.log(err);     
-    });
-
-};
-// =============================================== SQL Part ===============================================
-function runSQLConn(SQLStatement) {
-    incommingSQLDataArr = [];
-    count++;
-    console.log(`Körning - ${count}`);
-    // Creates a connection between the server and my client and listen for SQL changes¨
-    //let SQLConn = mysql.createConnection([{multipleStatements: true}, 'mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2']);
-
-    console.log("Ansluten till DB :)");
-    let SQLConn = mysql.createConnection({
-        host: SQLConfig.host,
-        user: SQLConfig.user,
-        password: SQLConfig.password,
-        port: SQLConfig.sqlPort,
-        database: SQLConfig.database,
-        multipleStatements: SQLConfig.multipleStatements,
-    });
-    SQLConn.connect(function(err) { 
-        if (err) throw err;        
-        SQLConn.query(SQLStatement, function (err, sqlResult) {
-            console.log('85');
-            //console.log(sqlResult);
-            incommingSQLDataArr.push(sqlResult)
-            if (err) {
-                //SQLConn.release();
-                return;
-            }
-        }); 
-        SQLConn.end();
-    });
-}
-/* Run function for the mehods ================================================================================================
-Function to choose correct statement according the inomming data */
-function buildCorrectSQLStatements(statementType, SQLObj){ // Find correct SQLStatement
-    let statementCols = 'date, activity, state, concerned, type, place, content';    
-
-    if (statementType === 'first run') choosenStatement = `SELECT * FROM ${SQLConfig.SQLTable} ORDER BY date DESC`;
+        });
+        
+    };
     
-    if (statementType === 'addRecord') {
-        let statementInsertIntoData = `('${ SQLObj.join("','")}');`;
-        choosenStatement = `INSERT INTO ${ SQLConfig.SQLTable} (sent, ${ statementCols }) VALUES${ statementInsertIntoData}`;  
+    // Run function for the mehods ================================================================================================
+    
+    let emtyDataArrays = (emtyingArr) => {
+        //Emtying the array at the end
+        emtyingArr = [];
     }
-
-
-    if (statementType === 'userSpec') {
-        choosenStatement = `SELECT * FROM ${SQLConfig.SQLTable} WHERE userName=${ SQLObj } ORDER BY date DESC`;
-    }
-    
-    //if (statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
-    
-    currentStatement = choosenStatement;
-    console.log('116');
-    console.log(currentStatement);
-    
-    return currentStatement;
-}
-let emtyDataArrays = (emtyingArr) => {
-    //Emtying the array at the end
-    emtyingArr = [];
-}
-// Validate the user who whants logging in
-let validateUser = (incommingUser) => {
-    let getFullName = '';
-    let userReturnData = {userMatch: false};
-    
+    // Validate the user who whants logging in
+    let validateUser = (incommingUser) => {
+        let getFullName = '';
+        let userReturnData = {userMatch: false};
+        
     let userList = regedUserList['regedUser'];
     console.log('130');
     console.log(incommingUser);
@@ -148,14 +89,17 @@ let validateUser = (incommingUser) => {
         }
     }
     return userReturnData;
-}
+} 
+
 
 // Run method when requested from client ======================================================================================
 // Get - Default
+//let incommingSQLDataArr = require('./ServerGetSQLData');
 app.get('/SQLData', (req, res) => {
-    runSQLConn(buildCorrectSQLStatements('first run', '')); 
+    SQLFunction.runSQLConn(SQLFunction.buildCorrectSQLStatements('first run', '')); 
     setTimeout(()  => {
-        res.status(200).send(incommingSQLDataArr);
+        //res.status(200).send(module.incommingSQLDataArr);
+       console.log("incommingSQLDataArr - 110", SQLFunction.incommingSQLDataArr);
     }, 1000);  
         console.log('=========================userSpec==========================================');
 });
