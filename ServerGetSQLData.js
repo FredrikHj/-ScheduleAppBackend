@@ -1,7 +1,8 @@
 // Import functions
-const SQLFunction = require('./SQLFunction');
+import {runSQLConn, buildCorrectSQLStatements, incommingSQLDataArr} from './Functions/SQLFunctions'; 
+import {sendCorrectUserData} from './Functions/UserFunctions';
 
-const SQLConfig = require('./SQLConfig');
+const SQLConfig = require('./Functions/SQLConfig');
 
 // Basic Server module
 const express = require('express');
@@ -93,45 +94,51 @@ let userReg = (userBody) => {
 
 
 // Run method when requested from client ======================================================================================
-// Get - Default
-//let incommingSQLDataArr = require('./ServerGetSQLData');
+// Run Logout  
 app.get('/SQLData', (req, res) => {
-    SQLFunction.runSQLConn(SQLFunction.buildCorrectSQLStatements('first run', '')); 
+    runSQLConn(buildCorrectSQLStatements('first run', '')); 
     setTimeout(()  => {
-        //res.status(200).send(module.incommingSQLDataArr);
-       console.log("incommingSQLDataArr - 110", SQLFunction.incommingSQLDataArr);
+        res.status(200).send(incommingSQLDataArr);
     }, 1000);  
         console.log('=========================userSpec==========================================');
 });
-app.get('/SQLData/:user', (req, res) => {
+
+// User loging in =============================================================================================================
+// UserValidation and send a token back as response
+app.post('/SQLData/Login', (req, res) => {
+    /*  The userdata is incomming and send into he function to validate the Logging in user:
+        if = true, the code = 200 is send back together with a tokem else the code = 404 is send with no data */
+     let incommingUserData = req.body.bodyData;
+     let returninUserData = validateUser(incommingUserData);
+     
+     if (returninUserData.userMatch === true) {        
+        jwt.sign(returninUserData, 'inlogSecretKey', (error, token) => {
+             console.log("token", token)
+             
+             res.statusMessage = "Du har loggats in :)";
+             res.status(200).send(token); // User is match
+        });        
+     }    
+
+    if (returninUserData.userMatch === false) {
+        res.statusMessage = "Användaren finns inte!";
+        res.status(203).send(null); // User is unmatch
+    }
+    returninUserData = {};
+});
+// Requested userData is send back if the token is the same as created
+app.get('/SQLData/:user:verifyToken', (req, res) => {
     inNewRecord = true;
     let getInlogedUser = req.params.user;
-    console.log(`166 - ${getInlogedUser}`);
-
+    
+    console.log("req.params.verifyToken - 134", req.params.verifyToken)
     //runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
     
-    setTimeout(() => {
-        console.log('173');        
-        console.log(sendCorrectUserData());
+    setTimeout(() => {   
         res.status(200).send(sendCorrectUserData(getInlogedUser));
     }, 3000);
 });
-let sendCorrectUserData = (getInlogedUser) => {  
-    let getCorrectUserData = [];  
-    incommingSQLDataArr.map((obj) => {
-        for (const key in obj) {
-            if (obj[key].userName === getInlogedUser) {
-                getCorrectUserData.push(obj[key]);
-            }
-        }
-        return getCorrectUserData;
-    });
-    console.log('242');
-    
-    console.log(getCorrectUserData);
-    
-    return getCorrectUserData;
-} 
+
 
 // AddSQLData & RegUsers ============================================================
 app.post('/SQLData/AddRecord', (req, res) => {
@@ -158,33 +165,7 @@ app.post('/SQLData/UserReg', (req, res) => {
     emtyDataArrays();
 });
 // =================================================================================
-// UserValidation
-app.post('/SQLData/Login', (req, res) => {
-    /* The userdata is incomming and send into he function to be validated:
-        if = true, the code = 200 is send back else the code = 404 is send.
-     */
-     let incommingUserData = req.body.bodyData;
-     console.log("incommingUserData", incommingUserData)
-     let returninUserData = validateUser(incommingUserData);
-     console.log("returninUserData -225", returninUserData)
-     
-     if (returninUserData.userMatch === true) {
-         
-        jwt.sign(returninUserData, 'inlogSecretKey', (error, token) => {
-             console.log("token", token)
-             
-             res.statusMessage = "Du har loggats in :)";
-             res.status(200).send(token); // User is match
-             
-        });        
-     }    
 
-    if (returninUserData.userMatch === false) {
-        res.statusMessage = "Användaren finns inte!";
-        res.status(203).send(null); // User is unmatch
-    }
-    returninUserData = {};
-});
 // Run filtering
 app.post('/SQLData/filter', (req, res) => {
     

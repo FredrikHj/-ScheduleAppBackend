@@ -5,6 +5,7 @@
   "main": "ServerGetSQLData.js",
   "dependencies": {
     "cors": "^2.8.5",
+    "esm": "^3.2.25",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.17.1",
@@ -14,6 +15,6 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "server": "npx nodemon ServerGetSQLData.js"
+    "server": "npx nodemon --exec babel-node ServerGetSQLData.js"
   }
 }
