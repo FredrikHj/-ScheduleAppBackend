@@ -14,16 +14,12 @@ app.use(express.json());
 app.use(cors());
 
 let addRecord = false;
-let inNewRecord = false;
+let inNewRecord = false; 
 let countRegedUser = 0;
-
+ 
 // The server information
 const port = process.env.PORT || SQLConfig.serverPort;
 let serverIO = app.listen(port, () => console.log(`getSQLData is listening on port ${port}!`));
-
-
-
-
 
 // All the accessable users for the app
 let regedUserList = require('./RegedUser.json');
@@ -120,13 +116,13 @@ app.get('/SQLData', (req, res) => {
 
 // User loging in =============================================================================================================
 // UserValidation and send a token back as response
-app.post('/SQLData/Login', verifyToken, (req, res) => {
+app.post('/SQLData/Login', (req, res) => {
     /*  The userdata is incomming and send into he function to validate the Logging in user:
         if = true, the code = 200 is send back together with a tokem else the code = 404 is send with no data */
-     let incommingUserData = req.body.bodyData;
-     let returninUserData = validateUser(incommingUserData);
+    let incommingUserData = req.body.bodyData;
+    let returninUserData = validateUser(incommingUserData);
      
-/*      if (returninUserData.userMatch === true) {        
+    if (returninUserData.userMatch === true) {        
         jwt.sign(returninUserData, 'inlogSecretKey', (error, token) => {
              console.log("token", token)
              
@@ -139,14 +135,13 @@ app.post('/SQLData/Login', verifyToken, (req, res) => {
         res.statusMessage = "Användaren finns inte!";
         res.status(203).send(null); // User is unmatch
     }
-    returninUserData = {}; */
+    returninUserData = {};
 });
 // Requested userData is send back if the token is the same as created
-app.get('/SQLData/:user:verifyToken', (req, res) => {
+app.get('/SQLData/:user', verifyToken, (req, res) => {
     inNewRecord = true;
     let getInlogedUser = req.params.user;
     
-    console.log("req.params.verifyToken - 134", req.params.verifyToken)
     //runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
     
     setTimeout(() => {   
