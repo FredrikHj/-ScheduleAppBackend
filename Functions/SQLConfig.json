@@ -5,6 +5,6 @@
     "user"     : "djcp7bmvky3s0mnm",
     "password" : "osp74zwrq5ut4gun",
     "database": "q3uqurm7z68qb3h2",
-    "SQLTable": "data_visning",
+    "SQLTable": "data",
     "multipleStatements": "true"
 }

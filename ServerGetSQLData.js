@@ -1,13 +1,13 @@
 // Import functions
 import {runSQLConn, buildCorrectSQLStatements, incommingSQLDataArr} from './Functions/SQLFunctions'; 
-import {sendCorrectUserData} from './Functions/UserFunctions';
+import {userId, validateUser, verifyUser} from './Functions/UserFunctions';
 
 const SQLConfig = require('./Functions/SQLConfig');
 
 // Basic Server module
 const express = require('express');
 let jwt = require('jsonwebtoken');
-const fileSystem = require('fs');
+
 let cors = require('cors');
 const app = express();
 app.use(express.json());
@@ -22,81 +22,30 @@ const port = process.env.PORT || SQLConfig.serverPort;
 let serverIO = app.listen(port, () => console.log(`getSQLData is listening on port ${port}!`));
 
 // All the accessable users for the app
-let regedUserList = require('./RegedUser.json');
+let regedUserList = require('./Functions/RegedUser.json');
 
-// ============================ Create a user ============================
-//Create id
-let userId  = () => { 
-    //Note - When calling this function I need set the id value = -1 able starting the user id from nr 1 -->
-    for (let index = 0; index < regedUserList.regedUser.length; index++) {
-        countRegedUser = regedUserList.regedUser[index].userId;
-    }
-    // Get the last id in my arr of users and add by one
-    countRegedUser++;    
-    return countRegedUser;
-}
-// Reg a user
-let userReg = (userBody) => {
-    console.log('46');
-    console.log(userBody);
-
-    let regedUser = {
-        userId: userId(),
-        fullName: userBody.fullName,
-        userName: userBody.userName,
-        userPassWord: userBody.userPassWord
-        
-    };
-    regedUserList['regedUser'].push(regedUser);
-    console.log(regedUserList);
-    
-    fileSystem.writeFile('./RegedUser.json', JSON.stringify(regedUserList //debugging  
-        , null, 2
-        ), function(err) {console.log(err);     
-        });
-        
-    };
-    
-    // Run function for the mehods ================================================================================================
+// Run function for the mehods ================================================================================================
     
     let emtyDataArrays = (emtyingArr) => {
         //Emtying the array at the end
         emtyingArr = [];
     }
     // Validate the user who whants logging in
-    let validateUser = (incommingUser) => {
-        let getFullName = '';
-        let userReturnData = {userMatch: false};
-        
-    let userList = regedUserList['regedUser'];
-    console.log('130');
-    console.log(incommingUser);
-    
-    // Check the userList for a userName vs password match
-    for (let index = 0; index < userList.length; index++) {
-        const getUsername = userList[index].userName;
-        const getPassword = userList[index].userPassWord;
-        // Check if there are any match with a reged user
-        if (incommingUser.userName === getUsername && incommingUser.userPassWord === getPassword) {
-            userReturnData = {
-                userId: userId()-1,
-                userMatch: true,
-                loginName: userList[index].fullName
-            }
-        }
-    }
-    return userReturnData;
-} 
+const createdToken = [];
+
 // Middleware for verfy token
 let verifyToken = (req, res, next) =>{
     const bearerHeader = req.headers['authorization'].split(' ')[1];
-    console.log("verifyToken -> bearerHeader", bearerHeader);
-
     // check there is a token
-    if (bearerHeader !== undefined) {
-        req.token = bearerHeader;
-        console.log("verifyToken -> req.token", req.token)
-        //jwt.verify(bearerHeader, );
+    if (bearerHeader === createdToken[0]) {       
+/*         let getInlogedUser = req.params.user;
+        console.log("verifyToken -> getInlogedUser", getInlogedUser)
+        runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
+        //jwt.verify(bearerHeader, 'inlogSecretKey');       
+        setTimeout(() => {   
+            res.status(200).send(verifyUser(getInlogedUser));
+        }, 3000); */
+
         next();
     }
     else res.status(403).send('Authorization failed!');
@@ -123,6 +72,7 @@ app.post('/SQLData/Login', (req, res) => {
     if (returninUserData.userMatch === true) {        
         jwt.sign(returninUserData, 'inlogSecretKey', (error, token) => {
             if(token){
+                createdToken.push(token);
                 res.statusMessage = "You are authenticated'";
                 res.status(200).send(token);
             }
@@ -140,11 +90,11 @@ app.post('/SQLData/Login', (req, res) => {
 app.get('/SQLData/:user', verifyToken, (req, res) => {
     inNewRecord = true;
     let getInlogedUser = req.params.user;
-    
-    //runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
-    
+    console.log("verifyToken -> getInlogedUser", getInlogedUser)
+    runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
+    //jwt.verify(bearerHeader, 'inlogSecretKey');       
     setTimeout(() => {   
-        res.status(200).send(sendCorrectUserData(getInlogedUser));
+        res.status(200).send(verifyUser(getInlogedUser));
     }, 3000);
 });
 

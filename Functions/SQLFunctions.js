@@ -10,10 +10,8 @@ let defaultStatement = `SELECT * FROM ${SQLConfig.SQLTable}`;
 
 export let test = 2;
 
-export let runSQLConn = (SQLStatement) =>{        
-
+export let runSQLConn = (SQLStatement) =>{      
     count++;
-    console.log(`Körning - ${count}`);
     // Creates a connection between the server and my client and listen for SQL changes¨
     //let SQLConn = mysql.createConnection([{multipleStatements: true}, 'mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2']);
 
@@ -28,8 +26,9 @@ export let runSQLConn = (SQLStatement) =>{
     });
     SQLConn.connect(function(err) { 
         if (err) throw err;        
+        console.log("runSQLConn -> SQLStatement", SQLStatement)
         SQLConn.query(SQLStatement, function (err, sqlResult) {
-            console.log('85');
+        console.log("runSQLConn -> sqlResult", sqlResult);
             incommingSQLDataArr.push(sqlResult);
             //console.log("incommingSQLDataArr - 43", incommingSQLDataArr)
             if (err) {
@@ -39,7 +38,6 @@ export let runSQLConn = (SQLStatement) =>{
         }); 
         SQLConn.end();
     });
-    console.log("incommingSQLDataArr - 67", incommingSQLDataArr);
 }
 export let buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find correct SQLStatement
     let statementCols = 'date, activity, state, concerned, type, place, content';    
@@ -58,10 +56,7 @@ export let buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find corre
     
     //if (statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     
-    currentStatement = choosenStatement;
-    console.log('116');
-    console.log(currentStatement);
-    
+    currentStatement = choosenStatement;   
     return currentStatement;
 }
     //Function to choose correct statement according the inomming data
