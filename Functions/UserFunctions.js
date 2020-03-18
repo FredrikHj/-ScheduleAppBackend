@@ -1,11 +1,34 @@
+// ==================================== User functions handling ====================================
 import {incommingSQLDataArr} from './SQLFunctions';
 const regedUserList = require('./RegedUser.json');
+const fs = require('fs');
 
-//Create id
+// Create a user account
+export const userReg = (regedUser) =>{
+    console.log("userReg -> regedUser", regedUser)
+
+    const regedUserObj = {
+        userId: userId(),
+        fullName: regedUser.fullName, 
+        userName: regedUser.userName,
+        userPassWord: regedUser.userPassWord
+    }
+
+    regedUserList.regedUser.push(regedUserObj);
+    console.log("userReg -> regedUserList", regedUserList)
+
+    fs.writeFile('./Functions/RegedUser.json', JSON.stringify(regedUserList, null, 1), function(err) {
+        if(err) {
+            return console.log(err);
+        }
+        console.log("The file was saved!");
+    });
+}
+//Create id for the created user
 let countRegedUser = 0;
-export const userId  = () => { 
+export const userId  = () => {  
     //Note - When calling this function I need set the id value = -1 able starting the user id from nr 1 -->
-    for (let index = 0; index < regedUserList.regedUser.length; index++) {
+    for (let index = 0; index < regedUserList.regedUser.length; index++) { 
         countRegedUser = regedUserList.regedUser[index].userId;
     }
     // Get the last id in my arr of users and add by one
@@ -18,8 +41,6 @@ export const validateUser = (incommingUser) => {
         let userReturnData = {userMatch: false};
         
     let userList = regedUserList['regedUser'];
-    console.log('130');
-    console.log(incommingUser);
     
     // Check the userList for a userName vs password match
     for (let index = 0; index < userList.length; index++) {
@@ -37,7 +58,9 @@ export const validateUser = (incommingUser) => {
     return userReturnData;
 } 
 export const verifyUser = (getInlogedUser) => {  
+    console.log("verifyUser -> getInlogedUser - 61", getInlogedUser)
     let getCorrectUserData = [];  
+    console.log("verifyUser -> incommingSQLDataArr - 63", incommingSQLDataArr)
     incommingSQLDataArr.map((obj) => {
         for (const key in obj) {
             if (obj[key].userName === getInlogedUser) {

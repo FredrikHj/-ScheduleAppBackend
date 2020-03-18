@@ -7,7 +7,6 @@ let choosenStatement = '';
 let count = 0;
 
 let defaultStatement = `SELECT * FROM ${SQLConfig.SQLTable}`;
-
 export let test = 2;
 
 export let runSQLConn = (SQLStatement) =>{      
@@ -26,11 +25,10 @@ export let runSQLConn = (SQLStatement) =>{
     });
     SQLConn.connect(function(err) { 
         if (err) throw err;        
-        console.log("runSQLConn -> SQLStatement", SQLStatement)
+        console.log("runSQLConn -> SQLStatement - 29", SQLStatement)
         SQLConn.query(SQLStatement, function (err, sqlResult) {
-        console.log("runSQLConn -> sqlResult", sqlResult);
+        console.log("runSQLConn -> sqlResult", sqlResult)
             incommingSQLDataArr.push(sqlResult);
-            //console.log("incommingSQLDataArr - 43", incommingSQLDataArr)
             if (err) {
                 //SQLConn.release();
                 return;
@@ -40,6 +38,7 @@ export let runSQLConn = (SQLStatement) =>{
     });
 }
 export let buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find correct SQLStatement
+    console.log("buildCorrectSQLStatements -> SQLObj - 42", SQLObj)
     let statementCols = 'date, activity, state, concerned, type, place, content';    
     
     if (statementType === 'first run') choosenStatement = `SELECT * FROM ${SQLConfig.SQLTable} ORDER BY date DESC`;
@@ -51,12 +50,17 @@ export let buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find corre
     
     
     if (statementType === 'userSpec') {
-        choosenStatement = `SELECT * FROM ${SQLConfig.SQLTable} WHERE userName=${ SQLObj } ORDER BY date DESC`;
+        choosenStatement = `SELECT * FROM ${SQLConfig.SQLTable} WHERE userName="${SQLObj}" ORDER BY date DESC`;
     }
     
     //if (statementType === 'filter') choosenStatement = `SELECT * FROM data ${SQLObj.currentStatement.operator} ${ SQLObj.currentStatement.filterIn } in ('${ SQLObj.currentStatement.SQLFilterStr}')`;
     
     currentStatement = choosenStatement;   
+    console.log("buildCorrectSQLStatements -> currentStatement - 60", currentStatement)
     return currentStatement;
 }
     //Function to choose correct statement according the inomming data
+    
+export const emptyUserData = () => {
+    incommingSQLDataArr = [];
+}

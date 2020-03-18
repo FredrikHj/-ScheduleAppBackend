@@ -1,16 +1,16 @@
 {
-  "regedUser": [
-    {
-      "userId": 1,
-      "fullName": "Fredrik Hjärpe",
-      "userName": "fredde",
-      "userPassWord": "test"
-    },
-    {
-      "userId": 2,
-      "fullName": "grreg",
-      "userName": "fredde2",
-      "userPassWord": "test"
-    }
-  ]
+ "regedUser": [
+  {
+   "userId": 1,
+   "fullName": "Fredrik Hjärpe",
+   "userName": "fredde",
+   "userPassWord": "test"
+  },
+  {
+   "userId": 2,
+   "fullName": "grreg",
+   "userName": "fredde2",
+   "userPassWord": "test"
+  }
+ ]
 }
