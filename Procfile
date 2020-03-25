@@ -1,1 +1,1 @@
-web: babel-node ServerGetSQLData.js
+web: node --exec babel-node ServerGetSQLData.js 
