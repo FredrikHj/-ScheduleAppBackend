@@ -83,7 +83,7 @@ app.post('/SQLData/UserReg', (req, res) => {
     Request a UserValidation and store the unser as a token --> the token sending back as a response.
     When the user is logedin there is a getmethos for collecting the user specefic data and sending back to the app
 */
-app.post('/SQLData/Login', (req, res) => {
+app.post('/SQLData/Auth', (req, res) => {
     /*  The userdata is incomming and send into he function to validate the Logging in user:
         if = true, the code = 200 is send back together with a tokem else the code = 404 is send with no data */
     let incommingUserData = req.body.bodyData;
@@ -91,6 +91,7 @@ app.post('/SQLData/Login', (req, res) => {
      
     if (returninUserData.userMatch === true) {        
         jwt.sign(returninUserData, 'inlogSecretKey', (error, token) => {
+        console.log("token", token)
             if(token){
                 createdToken.push(token);
                 res.statusMessage = "You are authenticated'";
