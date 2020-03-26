@@ -1,5 +1,6 @@
 // ==================================== User functions handling ====================================
-import {incommingSQLDataArr} from './SQLFunctions';
+const SQLFunctions = require('./SQLFunctions');
+
 const regedUserList = require('./RegedUser.json');
 const fs = require('fs');
 
@@ -60,8 +61,8 @@ exports.validateUser = (incommingUser) => {
 exports.verifyUser = (getInlogedUser) => {  
     console.log("verifyUser -> getInlogedUser - 61", getInlogedUser)
     let getCorrectUserData = [];  
-    console.log("verifyUser -> incommingSQLDataArr - 63", incommingSQLDataArr)
-    incommingSQLDataArr.map((obj) => {
+    console.log("verifyUser -> incommingSQLDataArr - 63", SQLFunctions.incommingSQLDataArr)
+    SQLFunctions.incommingSQLDataArr.map((obj) => {
         for (const key in obj) {
             if (obj[key].userName === getInlogedUser) {
                 getCorrectUserData.push(obj[key]);
