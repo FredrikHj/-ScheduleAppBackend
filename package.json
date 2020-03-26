@@ -9,18 +9,12 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.17.1",
-    "npm": "^6.13.6",
-    "socket.io": "^2.3.0"
+    "npm": "^6.13.6"
   },
   "author": "",
   "license": "ISC",
   "scripts": {
     "server": "npx nodemon ServerGetSQLData.js --ignore RegedUser.json"
   },
-  "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.8.7",
-    "@babel/node": "^7.8.7",
-    "@babel/preset-env": "^7.8.7"
-  }
+  "devDependencies": {}
 }

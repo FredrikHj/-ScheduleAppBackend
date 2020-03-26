@@ -54,13 +54,13 @@ let verifyUserData = (req, res, next) =>{
 // Run method when requested from client ======================================================================================
 // Run Logout  
 app.get('/SQLData', (req, res) => {
+    console.log('========================= Default ==========================================');
     SQLFunctions.emptyUserData();
     SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('first run', '')); 
     setTimeout(()  => {
         console.log("SQLFunctions.incommingSQLDataArr - 60", SQLFunctions.incommingSQLData)
         res.status(200).send(SQLFunctions.incommingSQLData());
     }, 1000);  
-        console.log('=========================userSpec==========================================');
 });
 // UserReg =========================================================================
 app.post('/SQLData/UserReg', (req, res) => {
@@ -116,8 +116,8 @@ app.get('/SQLData/:user',/*  verifyToken, */ (req, res) => {
     //jwt.verify(bearerHeader, 'inlogSecretKey');
     
     setTimeout(() => {   
-        console.log("incommingSQLDataArr - 112", SQLFunctions.incommingSQLDataArr)
-        res.status(200).send(SQLFunctions.incommingSQLDataArr);
+        console.log("incommingSQLDataArr - 112", SQLFunctions.incommingSQLData)
+        res.status(200).send(SQLFunctions.incommingSQLData);
     }, 3000); 
 });
 // AddSQLData & RegUsers ============================================================
