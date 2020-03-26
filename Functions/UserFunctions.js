@@ -4,7 +4,7 @@ const regedUserList = require('./RegedUser.json');
 const fs = require('fs');
 
 // Create a user account
-export const userReg = (regedUser) =>{
+exports.userReg = (regedUser) =>{
     console.log("userReg -> regedUser", regedUser)
 
     const regedUserObj = {
@@ -26,7 +26,7 @@ export const userReg = (regedUser) =>{
 }
 //Create id for the created user
 let countRegedUser = 0;
-export const userId  = () => {  
+const userId  = () => {  
     //Note - When calling this function I need set the id value = -1 able starting the user id from nr 1 -->
     for (let index = 0; index < regedUserList.regedUser.length; index++) { 
         countRegedUser = regedUserList.regedUser[index].userId;
@@ -36,7 +36,7 @@ export const userId  = () => {
     return countRegedUser;
 }
 // Validate the user who whants logging in
-export const validateUser = (incommingUser) => {
+exports.validateUser = (incommingUser) => {
         let getFullName = '';
         let userReturnData = {userMatch: false};
         
@@ -57,7 +57,7 @@ export const validateUser = (incommingUser) => {
     }
     return userReturnData;
 } 
-export const verifyUser = (getInlogedUser) => {  
+exports.verifyUser = (getInlogedUser) => {  
     console.log("verifyUser -> getInlogedUser - 61", getInlogedUser)
     let getCorrectUserData = [];  
     console.log("verifyUser -> incommingSQLDataArr - 63", incommingSQLDataArr)

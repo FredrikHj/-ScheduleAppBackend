@@ -1,6 +1,5 @@
-// Import functions
-import {runSQLConn, buildCorrectSQLStatements, incommingSQLDataArr, emptyUserData} from './Functions/SQLFunctions'; 
-import {userReg, userId, validateUser, verifyUser} from './Functions/UserFunctions';
+const SQLFunctions = require('./Functions/SQLFunctions'); 
+const userFunctions = require('./Functions/UserFunctions');
 
 const SQLConfig = require('./Functions/SQLConfig');
 
@@ -39,11 +38,11 @@ let verifyToken = (req, res, next) =>{
     // check there is a token
     //if (bearerHeader === createdToken[0]) {       
         let getInlogedUser = req.params.user;
-        runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
+        SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('userSpec', getInlogedUser));
         //jwt.verify(bearerHeader, 'inlogSecretKey');
-        verifyUser(getInlogedUser)       
+        userFunctions.verifyUser(getInlogedUser)       
         setTimeout(() => {   
-            res.status(200).send(incommingSQLDataArr);
+            res.status(200).send(SQLFunctions.incommingSQLDataArr);
         }, 3000); 
         next();
     //}
@@ -56,11 +55,11 @@ let verifyUserData = (req, res, next) =>{
 // Run method when requested from client ======================================================================================
 // Run Logout  
 app.get('/SQLData', (req, res) => {
-    emptyUserData();
-    runSQLConn(buildCorrectSQLStatements('first run', '')); 
+    SQLFunctions.emptyUserData();
+    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('first run', '')); 
     setTimeout(()  => {
-        console.log("incommingSQLDataArr", incommingSQLDataArr)
-        res.status(200).send(incommingSQLDataArr);
+        console.log("incommingSQLDataArr", SQLFunctions.incommingSQLDataArr)
+        res.status(200).send(SQLFunctions.incommingSQLDataArr);
     }, 1000);  
         console.log('=========================userSpec==========================================');
 });
@@ -70,13 +69,13 @@ app.post('/SQLData/UserReg', (req, res) => {
     console.log('116');
     const incomingNewUser = req.body; // Axios add, bodyData
 
-    userReg(incomingNewUser);
+    userFunctions.userReg(incomingNewUser);
     res.status(200).send(incomingNewUser);
 
 
     console.log('===================================================================');
     addRecord = false;
-    emtyDataArrays();
+    SQLFunctions.emtyDataArrays();
 });
 // User loging in =============================================================================================================
 /* 
@@ -87,7 +86,7 @@ app.post('/SQLData/Auth', (req, res) => {
     /*  The userdata is incomming and send into he function to validate the Logging in user:
         if = true, the code = 200 is send back together with a tokem else the code = 404 is send with no data */
     let incommingUserData = req.body.bodyData;
-    let returninUserData = validateUser(incommingUserData);
+    let returninUserData = userFunctions.validateUser(incommingUserData);
      
     if (returninUserData.userMatch === true) {        
         jwt.sign(returninUserData, 'inlogSecretKey', (error, token) => {
@@ -109,17 +108,17 @@ app.post('/SQLData/Auth', (req, res) => {
 });
 // Requested userData is send back if the token is the same as created
 app.get('/SQLData/:user',/*  verifyToken, */ (req, res) => {
-    emptyUserData();
+    SQLFunctions.emptyUserData();
     inNewRecord = true;
     let getInlogedUser = req.params.user;
     console.log("getInlogedUser - 111", getInlogedUser)
     
-    runSQLConn(buildCorrectSQLStatements('userSpec', getInlogedUser));
+    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('userSpec', getInlogedUser));
     //jwt.verify(bearerHeader, 'inlogSecretKey');
     
     setTimeout(() => {   
-        console.log("incommingSQLDataArr - 112", incommingSQLDataArr)
-        res.status(200).send(incommingSQLDataArr);
+        console.log("incommingSQLDataArr - 112", SQLFunctions.incommingSQLDataArr)
+        res.status(200).send(SQLFunctions.incommingSQLDataArr);
     }, 3000); 
 });
 // AddSQLData & RegUsers ============================================================
@@ -127,7 +126,7 @@ app.post('/SQLData/AddRecord', (req, res) => {
     addRecord = true;
     let currentInData = req.body.bodyData;
 
-    runSQLConn(buildCorrectSQLStatements('addRecord', currentInData));
+    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('addRecord', currentInData));
     //incommingSQLDataArr.push(currentStatement);
     console.log('===================================================================');
     addRecord = false;

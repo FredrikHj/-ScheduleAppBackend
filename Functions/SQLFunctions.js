@@ -1,15 +1,14 @@
 //SQL Config
 var mysql = require('mysql');
 const SQLConfig = require('./SQLConfig');
-export let incommingSQLDataArr = [];
+let incommingSQLDataArr = [];
 let currentStatement = '';
 let choosenStatement = '';
 let count = 0;
 
 let defaultStatement = `SELECT * FROM ${SQLConfig.SQLTable}`;
-export let test = 2;
 
-export let runSQLConn = (SQLStatement) =>{      
+exports.runSQLConn = (SQLStatement) =>{      
     count++;
     // Creates a connection between the server and my client and listen for SQL changes¨
     //let SQLConn = mysql.createConnection([{multipleStatements: true}, 'mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2']);
@@ -37,7 +36,7 @@ export let runSQLConn = (SQLStatement) =>{
         SQLConn.end();
     });
 }
-export let buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find correct SQLStatement
+exports.buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find correct SQLStatement
     console.log("buildCorrectSQLStatements -> SQLObj - 42", SQLObj)
     let statementCols = 'date, activity, state, concerned, type, place, content';    
     
@@ -61,6 +60,6 @@ export let buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find corre
 }
     //Function to choose correct statement according the inomming data
     
-export const emptyUserData = () => {
+exports.emptyUserData = () => {
     incommingSQLDataArr = [];
 }
