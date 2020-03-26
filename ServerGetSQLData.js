@@ -51,15 +51,14 @@ let verifyToken = (req, res, next) =>{
 let verifyUserData = (req, res, next) =>{
 
 }
-
 // Run method when requested from client ======================================================================================
 // Run Logout  
 app.get('/SQLData', (req, res) => {
     SQLFunctions.emptyUserData();
     SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('first run', '')); 
     setTimeout(()  => {
-        console.log("incommingSQLDataArr", SQLFunctions.incommingSQLDataArr)
-        res.status(200).send(SQLFunctions.incommingSQLDataArr);
+        console.log("SQLFunctions.incommingSQLDataArr - 60", SQLFunctions.incommingSQLData)
+        res.status(200).send(SQLFunctions.incommingSQLData());
     }, 1000);  
         console.log('=========================userSpec==========================================');
 });
