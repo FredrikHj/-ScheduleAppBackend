@@ -1,3 +1,4 @@
+// Fiunns denna?
 const SQLFunctions = require('./Functions/SQLFunctions'); 
 const userFunctions = require('./Functions/UserFunctions');
 
@@ -25,10 +26,10 @@ let regedUserList = require('./Functions/RegedUser.json');
 
 // Run function for the mehods ================================================================================================
 
-let emtyDataArrays = (emtyingArr) => {
+/* let resetSQLData = (emtyingArr) => {
     //Emtying the array at the end
     emtyingArr = [];
-}
+} */
 // Validate the user who whants logging in
 const createdToken = [];
 
@@ -55,12 +56,12 @@ let verifyUserData = (req, res, next) =>{
 // Run Logout  
 app.get('/SQLData', (req, res) => {
     console.log('========================= Default ==========================================');
-    SQLFunctions.emptyUserData();
     SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('first run', '')); 
     setTimeout(()  => {
-        console.log("SQLFunctions.incommingSQLDataArr - 60", SQLFunctions.incommingSQLData)
+        console.log("SQLFunctions.incommingSQLDataArr - 60", SQLFunctions.incommingSQLData());
         res.status(200).send(SQLFunctions.incommingSQLData());
     }, 1000);  
+    SQLFunctions.resetSQLData();
 });
 // UserReg =========================================================================
 app.post('/SQLData/UserReg', (req, res) => {
@@ -74,7 +75,7 @@ app.post('/SQLData/UserReg', (req, res) => {
 
     console.log('===================================================================');
     addRecord = false;
-    SQLFunctions.emtyDataArrays();
+    SQLFunctions.resetSQLData();
 });
 // User loging in =============================================================================================================
 /* 
@@ -107,7 +108,9 @@ app.post('/SQLData/Auth', (req, res) => {
 });
 // Requested userData is send back if the token is the same as created
 app.get('/SQLData/:user',/*  verifyToken, */ (req, res) => {
-    SQLFunctions.emptyUserData();
+    console.log('========================= User specific ==========================================');
+
+    SQLFunctions.resetSQLData();
     inNewRecord = true;
     let getInlogedUser = req.params.user;
     console.log("getInlogedUser - 111", getInlogedUser)
@@ -116,8 +119,7 @@ app.get('/SQLData/:user',/*  verifyToken, */ (req, res) => {
     //jwt.verify(bearerHeader, 'inlogSecretKey');
     
     setTimeout(() => {   
-        console.log("incommingSQLDataArr - 112", SQLFunctions.incommingSQLData)
-        res.status(200).send(SQLFunctions.incommingSQLData);
+        res.status(200).send(SQLFunctions.incommingSQLData());
     }, 3000); 
 });
 // AddSQLData & RegUsers ============================================================
@@ -129,7 +131,7 @@ app.post('/SQLData/AddRecord', (req, res) => {
     //incommingSQLDataArr.push(currentStatement);
     console.log('===================================================================');
     addRecord = false;
-    emtyDataArrays();
+    SQLFunctions.resetSQLData();
 });
 
 // =================================================================================

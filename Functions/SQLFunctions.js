@@ -1,19 +1,22 @@
-//SQL Config
+//SQL Module
 var mysql = require('mysql');
+// Import the SQL Config
 const SQLConfig = require('./SQLConfig');
-let incommingSQLDataArr = [];
 
+// Some useful variables used in the functions bellow 
+let incommingSQLDataArr = [];
+let structuredSQLDataArr = [];
 let currentStatement = '';
 let choosenStatement = '';
-let count = 0;
 
-let defaultStatement = `SELECT * FROM ${SQLConfig.SQLTable}`;
-exports.incommingSQLData = (sqlResult) => {
+//let defaultStatement = `SELECT * FROM ${SQLConfig.SQLTable}`;
+
+// Exported function running when called from both the: Default and User specific method
+exports.incommingSQLData = () => {
     return incommingSQLDataArr;
 }
 
 exports.runSQLConn = (SQLStatement) =>{      
-    count++;
     // Creates a connection between the server and my client and listen for SQL changes¨
     //let SQLConn = mysql.createConnection([{multipleStatements: true}, 'mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2']);
     
@@ -31,9 +34,6 @@ exports.runSQLConn = (SQLStatement) =>{
         console.log("runSQLConn -> SQLStatement - 29", SQLStatement)
         SQLConn.query(SQLStatement, function (error, sqlResult) {
             incommingSQLDataArr.push(sqlResult);
-            /*  setTimeout(() => {
-                exports.incommingSQLDataArr;
-            }, 1000); */
             if (err) {
                 //SQLConn.release();
                 return;
@@ -67,6 +67,6 @@ exports.buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find correct 
 }
     //Function to choose correct statement according the inomming data
     
-exports.emptyUserData = () => {
+exports.resetSQLData = () => {
     incommingSQLDataArr = [];
 }
