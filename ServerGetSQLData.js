@@ -4,6 +4,9 @@ const userFunctions = require('./Functions/UserFunctions');
 
 const SQLConfig = require('./Functions/SQLConfig');
 
+// Import statementCols
+const statementCols = require('./functions/SQLColumnName');
+
 // Basic Server module
 const express = require('express');
 let jwt = require('jsonwebtoken');
@@ -40,6 +43,8 @@ let verifyToken = (req, res, next) =>{
     //if (bearerHeader === createdToken[0]) {       
         let getInlogedUser = req.params.user;
         SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('userSpec', getInlogedUser));
+        SQLFunctions.runSQLConn(SQLFunctions.structuredCols());
+
         //jwt.verify(bearerHeader, 'inlogSecretKey');
         userFunctions.verifyUser(getInlogedUser)       
         setTimeout(() => {   
@@ -57,9 +62,16 @@ let verifyUserData = (req, res, next) =>{
 app.get('/SQLData', (req, res) => {
     console.log('========================= Default ==========================================');
     SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('first run', '')); 
+/*     for (let index = 0; index < statementCols.colsArr.length; index++) {
+        SQLFunctions.runSQLConn(SQLFunctions.structuredCols(), 'colStructure', index);
+    } */
     setTimeout(()  => {
-        console.log("SQLFunctions.incommingSQLDataArr - 60", SQLFunctions.incommingSQLData());
+        //console.log("SQLFunctions.incommingSQLDataArr - 60", SQLFunctions.incommingSQLData());
         res.status(200).send(SQLFunctions.incommingSQLData());
+            // Key with the completely SQLTabel and one key with the eatch colum data
+            //SQLTabel: 
+            //structuredInCol: 
+        
     }, 1000);  
     SQLFunctions.resetSQLData();
 });
@@ -70,8 +82,8 @@ app.post('/SQLData/UserReg', (req, res) => {
     const incomingNewUser = req.body; // Axios add, bodyData
 
     userFunctions.userReg(incomingNewUser);
-    res.status(200).send(incomingNewUser);
 
+    res.status(200).send(incomingNewUser);
 
     console.log('===================================================================');
     addRecord = false;
@@ -109,18 +121,17 @@ app.post('/SQLData/Auth', (req, res) => {
 // Requested userData is send back if the token is the same as created
 app.get('/SQLData/:user',/*  verifyToken, */ (req, res) => {
     console.log('========================= User specific ==========================================');
-
     SQLFunctions.resetSQLData();
     inNewRecord = true;
-    let getInlogedUser = req.params.user;
-    console.log("getInlogedUser - 111", getInlogedUser)
-    
+    let getInlogedUser = req.params.user;   
     SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('userSpec', getInlogedUser));
-    //jwt.verify(bearerHeader, 'inlogSecretKey');
-    
+   
     setTimeout(() => {   
-        res.status(200).send(SQLFunctions.incommingSQLData());
-    }, 3000); 
+        res.status(200).send({
+            SQLData: SQLFunctions.incommingSQLData(),
+            structuringCols: SQLFunctions.structureSQLData(SQLFunctions.incommingSQLData()[0])
+        })
+    }, 500); 
 });
 // AddSQLData & RegUsers ============================================================
 app.post('/SQLData/AddRecord', (req, res) => {
