@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "server": "npx node ServerGetSQLData.js --ignore RegedUser.json"
+    "server": "npx nodemon ServerGetSQLData.js --ignore RegedUser.json"
   },
   "devDependencies": {}
 }

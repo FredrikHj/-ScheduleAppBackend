@@ -5,7 +5,7 @@ const userFunctions = require('./Functions/UserFunctions');
 const SQLConfig = require('./Functions/SQLConfig');
 
 // Import statementCols
-const statementCols = require('./functions/SQLColumnName');
+const statementCols = require('./Functions/SQLColumnName');
 
 // Basic Server module
 const express = require('express');
