@@ -12,9 +12,26 @@ let currentStatement = '';
 let choosenStatement = '';
 let colStructureArr = [];
 
-const removeFromColStructureArr = ['', 'Ingen', 'ingen'];
-//let defaultStatement = `SELECT * FROM ${SQLConfig.SQLTable}`;
-
+// Common functionfor the head SQL functions
+const removeEmptyStr = (structuredSQLDataArr, structuredObjToArr, outerIndex, innerIndex) => {
+        /* From structuredObjToArr I placing every other index value´s into pushToStructuredSQLDataArr in opposite order.
+        The structure of pushToStructuredSQLDataArr are every body index are representing the SQLData´s columns.
+        I needing the pushToStructuredSQLDataArr in mapping the CellInput component. */
+        const arrStr = structuredObjToArr[outerIndex][innerIndex];
+        // Removing empty strings
+        if (arrStr !== '' || arrStr !== structuredObjToArr[outerIndex][innerIndex]) structuredSQLDataArr[innerIndex].push(structuredObjToArr[outerIndex][innerIndex]);
+    }
+const removeDublicate = (structuredSQLDataArr) =>{
+    const removedDublicatedStr = [];
+    for (let outerIndex = 0; outerIndex < structuredSQLDataArr.length; outerIndex++) {
+        // Remove dublicated strings
+        const removedDublicatedStrArr = [...new Set(structuredSQLDataArr[outerIndex])]
+        //Push the new arraies = The dublicated strings is removed
+        removedDublicatedStr.push(removedDublicatedStrArr);
+    }
+    //console.log("removeDublicate -> structuredSQLDataArr - ArrUt", removedDublicatedStr)
+    return removedDublicatedStr;
+}
 // Exported function running when called from both the: Default and User specific method
 exports.incommingSQLData = () => {
     return incommingSQLDataArr;
@@ -22,48 +39,23 @@ exports.incommingSQLData = () => {
 exports.structureSQLData = (incommingSQLDataArr) => {
     const structuredSQLDataArr = [];
     const structuredObjToArr = [];
-    const cleanStructuredObjToArr = (outerIndex, innerIndex) => {
-        /* From structuredObjToArr I placing every other index value´s into pushToStructuredSQLDataArr in opposite order.
-        The structure of pushToStructuredSQLDataArr are every body index are representing the SQLData´s columns.
-        I needing the pushToStructuredSQLDataArr in mapping the CellDropDownList component. */
-        const arrStr = structuredObjToArr[outerIndex][innerIndex];
-        if (arrStr !== '') {
-            structuredSQLDataArr[innerIndex].push(structuredObjToArr[outerIndex][innerIndex]);
-        }
-    }
+
     
     // Loop through the SQLData´s index = 0 and get into the object finding the keys = SQLCols
     for (const key in incommingSQLDataArr[0]) structuredSQLDataArr.push([]);
     
-    console.log("exports.structureSQLData -> incommingSQLDataArr", structuredSQLDataArr)
     // In SQLData the structure are like a tabel there every index starting at 0 are handle the key value pair from the SQL Tabel as a object 
     for (let outerIndex = 0; outerIndex < incommingSQLDataArr.length; outerIndex++) {
         /* From every SQL tabels object I taking the value´s and collect it in structuredObjToArr. 
         structuredObjToArr has the same structure as SQLData accept from that the every index are handle just the values.*/
         structuredObjToArr.push(Object.values(incommingSQLDataArr[outerIndex]));
-        console.log("exports.structureSQLData -> structuredSQLDataArr", structuredObjToArr)
-        for (let innerIndex = 0; innerIndex < structuredSQLDataArr.length; innerIndex++) {
+        for (let innerIndex = 0; innerIndex < structuredSQLDataArr.length; innerIndex++)
             // Cleaning the structuredObjToArr from empty strings
-            cleanStructuredObjToArr(outerIndex, innerIndex);
-
+            removeEmptyStr(structuredSQLDataArr, structuredObjToArr, outerIndex, innerIndex);
         }
-    }
-    console.log("cleanStructuredObjToArr -> structuredSQLDataArr - 52", structuredSQLDataArr)
-    //filerOptionColList();
-    
-    
+    // Remove the first index = InlogedUser
     structuredSQLDataArr.shift();
-/*     const testFilter = structuredSQLDataArr.filter((str, index) =>{
-        for (let index = 0; index < str.length; index++) {
-            console.log("exports.structureSQLData -> str.includes('Ingen') - 49;", str.includes(''))
-        }
-        return 
-    });
-    testFilter.map((str) => console.log("exports.structureSQLData -> str - map", str));
- */
-    // If finding same col in same key it will be skipped.
-
-    return structuredSQLDataArr;
+    return removeDublicate(structuredSQLDataArr);
 }
 const filerOptionColList = () => {
 
