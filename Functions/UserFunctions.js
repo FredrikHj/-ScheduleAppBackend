@@ -72,3 +72,7 @@ exports.verifyUser = (getInlogedUser) => {
     });
     return getCorrectUserData;
 }
+exports.fixSQLDataColsObj = (incommingCols) => {
+
+    return incommingCols;
+}
