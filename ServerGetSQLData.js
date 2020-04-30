@@ -1,4 +1,3 @@
-// Fiunns denna?
 const SQLFunctions = require('./Functions/SQLFunctions'); 
 const userFunctions = require('./Functions/UserFunctions');
 
@@ -15,7 +14,11 @@ let jwt = require('jsonwebtoken');
 let cors = require('cors');
 const app = express();
 app.use(express.json());
+app.use(express.static('public'));
 app.use(cors());
+
+const fileSystem = require('fs');
+const path = require('path');
 
 let addRecord = false;
 let inNewRecord = false; 
@@ -59,20 +62,37 @@ let verifyUserData = (req, res, next) =>{
 
 }
 // Run method when requested from client ======================================================================================
+// Collect siteLog 
+app.get('/SiteLoga', (req, res) => {
+    console.log('========================= Get SiteLogo ==========================================');
+    let correctPath = '';
+    const directoryPath = path.join(__dirname, './public/Images');
+/*     console.log("directoryPath", directoryPath)
+   = directoryPath */
+/*     
+    imgRootDirectory.filter((item, index) => {
+        if (index > 4 ) correctPath+= `/${item}`;
+    })
+     */
+    fileSystem.readdir(directoryPath, (err, file) => {
+        let imgPath =  directoryPath.split('public\\')[1];
+        console.log("`${correctPath}${file[0]}`", )
+        res.set({'Content-Type': 'image/jpg'});
+        res.status(200).send(`/${imgPath}/${file}`);
+    });
+    SQLFunctions.resetSQLData();
+});
 // Run Logout  
 app.get('/SQLData', (req, res) => {
     console.log('========================= Default ==========================================');
+    
     SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('first run', '')); 
 /*     for (let index = 0; index < statementCols.colsArr.length; index++) {
         SQLFunctions.runSQLConn(SQLFunctions.structuredCols(), 'colStructure', index);
     } */
     setTimeout(()  => {
-        res.status(200).send(SQLFunctions.incommingSQLData());
-            // Key with the completely SQLTabel and one key with the eatch colum data
-            //SQLTabel: 
-            //structuredInCol: 
-        
-    }, 1000);  
+        res.status(200).send(SQLFunctions.incommingSQLData());        
+    }, 500);  
     SQLFunctions.resetSQLData();
 });
 // UserReg =========================================================================
