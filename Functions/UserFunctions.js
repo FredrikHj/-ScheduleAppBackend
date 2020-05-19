@@ -10,13 +10,13 @@ exports.userReg = (regedUser) =>{
 
     const regedUserObj = {
         userId: userId(),
-        fullName: regedUser.fullName, 
-        userName: regedUser.userName,
-        userPassWord: regedUser.userPassWord
+        yourName: regedUser.fullName, 
+        yourID: regedUser.userName,
+        passWord: regedUser.userPassWord
     }
+    console.log("exports.userReg -> regedUserObj", regedUserObj)
 
     regedUserList.regedUser.push(regedUserObj);
-    console.log("userReg -> regedUserList", regedUserList)
 
     fs.writeFile('./Functions/RegedUser.json', JSON.stringify(regedUserList, null, 1), function(err) {
         if(err) {

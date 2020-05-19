@@ -15,6 +15,8 @@ let choosenStatement = '';
 exports.incommingSQLData = () => {
     return incommingSQLDataArr;
 }
+
+// Headfunction for SQL
 exports.runSQLConn = (SQLStatement) =>{      
     // Creates a connection between the server and my client and listen for SQL changes¨
     //let SQLConn = mysql.createConnection([{multipleStatements: true}, 'mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2']);
@@ -44,6 +46,8 @@ exports.runSQLConn = (SQLStatement) =>{
     });
 }
 exports.SQLDataArr = [incommingSQLDataArr];
+
+// SQL Question builder 
 exports.buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find correct SQLStatement
     console.log("exports.buildCorrectSQLStatements -> statementType", statementType)
     console.log("buildCorrectSQLStatements -> SQLObj - 42", SQLObj)

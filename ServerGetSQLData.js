@@ -86,7 +86,7 @@ app.get('/SiteLoga', (req, res) => {
 app.get('/SQLData', (req, res) => {
     console.log('========================= Default ==========================================');
     
-    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('first run', '')); 
+    SQLFunctions.runSQLConn( SQLFunctions.buildCorrectSQLStatements('first run', '') ); 
 /*     for (let index = 0; index < statementCols.colsArr.length; index++) {
         SQLFunctions.runSQLConn(SQLFunctions.structuredCols(), 'colStructure', index);
     } */
@@ -97,17 +97,18 @@ app.get('/SQLData', (req, res) => {
 });
 // UserReg =========================================================================
 app.post('/SQLData/UserReg', (req, res) => {
+    console.log('========================= UserReg ==========================================');
     addRecord = true;
-    console.log('116');
     const incomingNewUser = req.body; // Axios add, bodyData
+    console.log("incomingNewUser", incomingNewUser)
 
-    userFunctions.userReg(incomingNewUser);
+    userFunctions.userReg(incomingNewUser.bodyData);
 
-    res.status(200).send(incomingNewUser);
+    res.status(201).send(incomingNewUser);
 
     console.log('===================================================================');
     addRecord = false;
-    SQLFunctions.resetSQLData();
+    
 });
 // User loging in =============================================================================================================
 /* 
