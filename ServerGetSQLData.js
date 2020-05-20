@@ -26,10 +26,7 @@ let countRegedUser = 0;
 
 // The server information
 const port = process.env.PORT || SQLConfig.serverPort;
-let serverIO = app.listen(port, () => console.log(`getSQLData is listening on port ${port}!`));
-
-// All the accessable users for the app
-let regedUserList = require('./Functions/RegedUser.json');
+app.listen(port, () => console.log(`getSQLData is listening on port ${port}!`));
 
 // Run function for the mehods ================================================================================================
 
@@ -41,7 +38,7 @@ let regedUserList = require('./Functions/RegedUser.json');
 const createdToken = [];
 
 // Middleware according the name
-let verifyToken = (req, res, next) =>{
+/* let verifyToken = (req, res, next) =>{
     //const bearerHeader = req.headers['authorization'].split(' ')[1];
     // check there is a token
     //if (bearerHeader === createdToken[0]) {       
@@ -53,14 +50,12 @@ let verifyToken = (req, res, next) =>{
         userFunctions.verifyUser(getInlogedUser)       
         setTimeout(() => {   
             res.status(200).send(SQLFunctions.incommingSQLDataArr);
-        }, 3000); 
+        }, 500); 
         next();
     //}
     //else res.status(403).send('Authorization failed!');
-} 
-let verifyUserData = (req, res, next) =>{
+}  */
 
-}
 // Run method when requested from client ======================================================================================
 // Collect siteLog 
 app.get('/SiteLoga', (req, res) => {
@@ -164,20 +159,24 @@ app.get('/SQLData/:user',/*  verifyToken, */ (req, res) => {
 app.post('/SQLData/AddRecord', (req, res) => {
     addRecord = true;
     let currentInData = req.body.bodyData;
+    console.log("currentInData", currentInData)
 
     SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('addRecord', currentInData));
-    //incommingSQLDataArr.push(currentStatement);
+    res.status(201).send('Användaren Skapades!'); ;
     console.log('===================================================================');
     addRecord = false;
     SQLFunctions.resetSQLData();
+
 });
 
 // =================================================================================
 
 // Run filtering
-app.post('/SQLData/filter', (req, res) => {
-    
-
+app.post('/SQLData/RemoveRecord', (req, res) => {
+    let recordToBeRemoved = req.body.bodyData;
+    console.log("recodToBeRemoved", recordToBeRemoved)
+    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('removeRecord', recordToBeRemoved));
+    res.status(200).send('Aktiviteten Bortagen!'); ;
 });
 
 // ============================================================================================================================ 
