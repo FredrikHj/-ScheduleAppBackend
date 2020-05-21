@@ -2,21 +2,9 @@
  "regedUser": [
   {
    "userId": 1,
-   "fullName": "Fredrik Hjärpe",
+   "fullName": "HBGWorks",
    "userName": "fredde",
    "userPassWord": "test"
-  },
-  {
-   "userId": 2,
-   "fullName": "grreg",
-   "userName": "fredde2",
-   "userPassWord": "test"
-  },
-  {
-   "userId": 3,
-   "yourName": "dvdsv",
-   "yourID": "<dv",
-   "passWord": "dvSV"
   }
  ]
 }
