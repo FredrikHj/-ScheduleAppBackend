@@ -1,3 +1,5 @@
+// ==================================== SQLfunctions handling ====================================
+
 //SQL Module
 var mysql = require('mysql');
 // Import the SQL Config
@@ -8,21 +10,19 @@ const statementCols = require('./SQLColumnName');
 // Some useful variables used in the functions bellow 
 let incommingSQLDataArr = [];
 let currentInlogedUser = ''
-let SQLDataColsArr = statementCols.colsArr;
+//let SQLDataColsArr = statementCols.colsArr;
 let currentStatement = '';
-let choosenStatement = '';
+//let choosenStatement = '';
 
 // Exported function running when called from both the: Default and User specific method
 exports.incommingSQLData = () => {
     return incommingSQLDataArr;
 }
-
-// Headfunction for SQL
+/* =======================================================================================================================
+ Headfunction for SQL*/
 exports.runSQLConn = (SQLStatement) =>{      
-    // Creates a connection between the server and my client and listen for SQL changes¨
-    //let SQLConn = mysql.createConnection([{multipleStatements: true}, 'mysql://djcp7bmvky3s0mnm:osp74zwrq5ut4gun@m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com:3306/q3uqurm7z68qb3h2']);
-    
-    console.log("Ansluten till DB :)");
+    // Creates a connection between the server and my client and listen for SQL changes    
+    console.log("Connect for the SQL DB :)");
     let SQLConn = mysql.createConnection({
         host: SQLConfig.host,
         user: SQLConfig.user,
@@ -33,24 +33,21 @@ exports.runSQLConn = (SQLStatement) =>{
     });
     SQLConn.connect(function(err) { 
         if (err) throw err;        
-        console.log("runSQLConn -> SQLStatement - 35", SQLStatement)
         SQLConn.query(SQLStatement, function (error, sqlResult) {
-            //if(getStatus === 'default') 
             incommingSQLDataArr.push(sqlResult);
 
             if (err) {
-                //SQLConn.release();
                 return;
             }
         }); 
+        // Closing the connection
         SQLConn.end();
     });
 }
 exports.SQLDataArr = [incommingSQLDataArr];
-
-// SQL Question builder 
+/* =======================================================================================================================
+   SQL Question builder */
 exports.buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find correct SQLStatement
-    console.log("buildCorrectSQLStatements -> SQLObj - 42", SQLObj)
     if (statementType === 'first run') currentStatement = `SELECT * FROM ${SQLConfig.SQLTable} ORDER BY date DESC`;
     
     if (statementType === 'addRecord') {
@@ -60,24 +57,17 @@ exports.buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find correct 
 
         let statementInsertIntoData = `('${ SQLObj.join("','")}');`;
         currentStatement = `INSERT INTO ${ SQLConfig.SQLTable} (${ statementCols.colsStr }) VALUES${ statementInsertIntoData}`;  
-        console.log("exports.buildCorrectSQLStatements -> statementInsertIntoData", statementInsertIntoData)
-        console.log("exports.buildCorrectSQLStatements -> choosenStatement", currentStatement)
     }
     if (statementType === 'userSpec') {
         currentInlogedUser = SQLObj;
         currentStatement = `SELECT * FROM ${SQLConfig.SQLTable} WHERE userName="${SQLObj}" ORDER BY date DESC`;
     }
-    if (statementType === 'removeRecord') {
-        currentStatement = `DELETE FROM ${SQLConfig.SQLTable} WHERE timeStamp="${SQLObj}"`;
-    }
+    if (statementType === 'removeRecord') currentStatement = `DELETE FROM ${SQLConfig.SQLTable} WHERE timeStamp="${SQLObj}"`;
 
     return currentStatement;
 }
-
-// General functions =========================================================================
-exports.resetSQLData = () => {
-    incommingSQLDataArr = [];
-}
+/* Add currrentTimeStamp for the tables records. The stamp is using identifaying the record to be removed when you
+clicking at the corresponding btns*/ 
 const addCurrentTimeSpamp = () => {
     const currentDate = new Date();
     
@@ -90,4 +80,8 @@ const addCurrentTimeSpamp = () => {
     let millisec = currentDate.getMilliseconds();
     let dateString = `${year}-${(date)}-${month+1}|${hour}:${min}:${sec}:${millisec}`;
     return dateString;
+}
+// General functions =========================================================================
+exports.resetSQLData = () => {
+    incommingSQLDataArr = [];
 }

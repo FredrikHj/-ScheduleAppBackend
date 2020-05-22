@@ -1,3 +1,5 @@
+// ==================================== Main server file ====================================
+
 const SQLFunctions = require('./Functions/SQLFunctions'); 
 const userFunctions = require('./Functions/UserFunctions');
 
@@ -28,16 +30,12 @@ let countRegedUser = 0;
 const port = process.env.PORT || SQLConfig.serverPort;
 app.listen(port, () => console.log(`getSQLData is listening on port ${port}!`));
 
-// Run function for the mehods ================================================================================================
-
-/* let resetSQLData = (emtyingArr) => {
-    //Emtying the array at the end
-    emtyingArr = [];
-} */
-// Validate the user who whants logging in
+/* Run function for the mehods ==============================================================
+    Validate the user who whants logging in */
 const createdToken = [];
 
-// Middleware according the name
+/* Middleware according the name
+    Will using varifying the token string from eatch server request */ 
 /* let verifyToken = (req, res, next) =>{
     //const bearerHeader = req.headers['authorization'].split(' ')[1];
     // check there is a token
@@ -56,35 +54,28 @@ const createdToken = [];
     //else res.status(403).send('Authorization failed!');
 }  */
 
-// Run method when requested from client ======================================================================================
-// Collect siteLog 
+// Run method when requested from client ====================================================
+// Get siteLoga
 app.get('/SiteLoga', (req, res) => {
     console.log('========================= Get SiteLogo ==========================================');
     let correctPath = '';
     const directoryPath = path.join(__dirname, './public/Images');
-/*     console.log("directoryPath", directoryPath)
-   = directoryPath */
-/*     
-    imgRootDirectory.filter((item, index) => {
-        if (index > 4 ) correctPath+= `/${item}`;
-    })
-     */
+
     fileSystem.readdir(directoryPath, (err, file) => {
         let imgPath =  directoryPath.split('public\\')[1];
-        console.log("`${correctPath}${file[0]}`", )
         res.set({'Content-Type': 'image/jpg'});
         res.status(200).send(`/${imgPath}/${file}`);
     });
     SQLFunctions.resetSQLData();
 });
-// Run Logout  
+// Run default   
 app.get('/SQLData', (req, res) => {
     console.log('========================= Default ==========================================');
-    
+    /* Triggering the main sql function with a callback to creating a SQL question as (Att 1)
+        The callback take 2 att (Atr 1 = Run type, Atr 2 = some data object to send in for including to the question builder.
+        Att 2 is emty because there is no data sending in for the default.  */
     SQLFunctions.runSQLConn( SQLFunctions.buildCorrectSQLStatements('first run', '') ); 
-/*     for (let index = 0; index < statementCols.colsArr.length; index++) {
-        SQLFunctions.runSQLConn(SQLFunctions.structuredCols(), 'colStructure', index);
-    } */
+
     setTimeout(()  => {
         res.status(200).send(SQLFunctions.incommingSQLData());        
     }, 500);  
@@ -95,30 +86,24 @@ app.post('/SQLData/UserReg', (req, res) => {
     console.log('========================= UserReg ==========================================');
     addRecord = true;
     const incomingNewUser = req.body; // Axios add, bodyData
-    console.log("incomingNewUser", incomingNewUser)
-
+    // Triggering the userReg function and sending in the new user data (Att 1)
     userFunctions.userReg(incomingNewUser.bodyData);
 
-    res.status(201).send(incomingNewUser);
-
-    console.log('===================================================================');
+    res.status(201).send('Användaren skapad');
     addRecord = false;
     
 });
-// User loging in =============================================================================================================
-/* 
-    Request a UserValidation and store the unser as a token --> the token sending back as a response.
-    When the user is logedin there is a getmethos for collecting the user specefic data and sending back to the app
-*/
+/* User loging in ===========================================================================
+    Request a UserValidation and store the user as a token --> the token is then sending back as a response */
 app.post('/SQLData/Auth', (req, res) => {
-    /*  The userdata is incomming and send into he function to validate the Logging in user:
-        if = true, the code = 200 is send back together with a tokem else the code = 404 is send with no data */
+    /*  The userdata is comming and send into the function to validate the Logging in user:
+        if = true, the code = 200 is sending back as respons together with a token
+        else the code = 404 is sending with no data */
     let incommingUserData = req.body.bodyData;
-    let returninUserData = userFunctions.validateUser(incommingUserData);
+    let returningVaryfiedUserData = userFunctions.validateUser(incommingUserData);
      
-    if (returninUserData.userMatch === true) {        
-        jwt.sign(returninUserData, 'inlogSecretKey', (error, token) => {
-        console.log("token", token)
+    if (returningVaryfiedUserData.userMatch === true) {        
+        jwt.sign(returningVaryfiedUserData, 'inlogSecretKey', (error, token) => {
             if(token){
                 createdToken.push(token);
                 res.statusMessage = "You are authenticated'";
@@ -128,39 +113,35 @@ app.post('/SQLData/Auth', (req, res) => {
         });        
      }    
 
-    if (returninUserData.userMatch === false) {
+    if (returningVaryfiedUserData.userMatch === false) {
         res.statusMessage = "User does not find!";
         res.status(203).send(null); // User is unmatch
     }
-    returninUserData = {};
+    returningVaryfiedUserData = {};
 });
+
 // Requested userData is send back if the token is the same as created
 app.get('/SQLData/:user',/*  verifyToken, */ (req, res) => {
     console.log('========================= User specific ==========================================');
         SQLFunctions.resetSQLData();
         inNewRecord = true;
-        let getInlogedUser = req.params.user;
-        console.log("getInlogedUser - 111", getInlogedUser)
-        
-        SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('userSpec', getInlogedUser));
-        //jwt.verify(bearerHeader, 'inlogSecretKey');
-        
+    /* Triggering the main sql function with a callback to creating a SQL question as (Att 1)
+        The callback take 2 att (Atr 1 = Run type, Atr 2 = The inlogging user to send in for including into the question builder. */
+        SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('userSpec', req.params.user));
+            
         setTimeout(() => {   
             res.status(200).send({
                 SQLData: SQLFunctions.incommingSQLData(),
                 structuringCols: userFunctions.fixSQLDataColsObj(SQLDataColsObj),
             })
         }, 500); 
-    
-
-
 });
 // AddSQLData & RegUsers ============================================================
 app.post('/SQLData/AddRecord', (req, res) => {
     addRecord = true;
     let currentInData = req.body.bodyData;
-    console.log("currentInData", currentInData)
-
+    /* Triggering the main sql function with a callback to creating a SQL question as (Att 1)
+        The callback take 2 att (Atr 1 = Run type, Atr 2 = The added user to send in for including into the question builder. */
     SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('addRecord', currentInData));
     res.status(201).send('Användaren Skapades!'); ;
     console.log('===================================================================');
@@ -169,15 +150,10 @@ app.post('/SQLData/AddRecord', (req, res) => {
 
 });
 
-// =================================================================================
-
-// Run filtering
+// Record remove ============================================================================
 app.post('/SQLData/RemoveRecord', (req, res) => {
-    let recordToBeRemoved = req.body.bodyData;
-    console.log("recodToBeRemoved", recordToBeRemoved)
-    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('removeRecord', recordToBeRemoved));
-    res.status(200).send('Aktiviteten Bortagen!'); ;
+    /* Triggering the main sql function with a callback to creating a SQL question as (Att 1)
+    The callback take 2 att (Atr 1 = Run type, Atr 2 = The records currentTimeStamp to be remove for including into the question builder. */
+    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('removeRecord', req.body.bodyData));
+    res.status(200).send('Aktiviteten Bortagen!');
 });
-
-// ============================================================================================================================ 
-

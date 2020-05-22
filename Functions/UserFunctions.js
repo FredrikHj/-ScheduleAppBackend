@@ -1,23 +1,24 @@
-// ==================================== User functions handling ====================================
-const SQLFunctions = require('./SQLFunctions');
-
-const regedUserList = require('./RegedUser.json');
+// ==================================== Userfunctions handling ====================================
+// Module imoport for the filesystem working
 const fs = require('fs');
 
-// Create a user account
-exports.userReg = (regedUser) =>{
-    console.log("userReg -> regedUser", regedUser)
+// Function for the server and its funtion working
+const SQLFunctions = require('./SQLFunctions');
+const regedUserList = require('./RegedUser.json');
 
-    const regedUserObj = {
-        userId: userId(),
-        yourName: regedUser.fullName, 
-        yourID: regedUser.userName,
-        passWord: regedUser.userPassWord
+/* =======================================================================================================================
+ Create a user account and its id creation */
+ exports.userReg = (regedUser) =>{
+     /*  The incomming user and its various keys is saved in a new object which is saving as json in the file RegedUser.json.
+     The key one in the object is holding the user´s ID nr, which is calculated according the included array length */
+     const regedUserObj = {
+         userId: userId(),
+         yourName: regedUser.fullName, 
+         yourID: regedUser.userName,
+         passWord: regedUser.userPassWord
     }
-    console.log("exports.userReg -> regedUserObj", regedUserObj)
-
     regedUserList.regedUser.push(regedUserObj);
-
+    // The object is writes to the json file
     fs.writeFile('./Functions/RegedUser.json', JSON.stringify(regedUserList, null, 1), function(err) {
         if(err) {
             return console.log(err);
@@ -25,7 +26,6 @@ exports.userReg = (regedUser) =>{
         console.log("The file was saved!");
     });
 }
-//Create id for the created user
 let countRegedUser = 0;
 const userId  = () => {  
     //Note - When calling this function I need set the id value = -1 able starting the user id from nr 1 -->
@@ -36,10 +36,12 @@ const userId  = () => {
     countRegedUser++;    
     return countRegedUser;
 }
+// =======================================================================================================================
+
 // Validate the user who whants logging in
 exports.validateUser = (incommingUser) => {
-        let getFullName = '';
-        let userReturnData = {userMatch: false};
+    let getFullName = '';
+    let userReturnData = {userMatch: false};
         
     let userList = regedUserList['regedUser'];
     
@@ -59,9 +61,7 @@ exports.validateUser = (incommingUser) => {
     return userReturnData;
 } 
 exports.verifyUser = (getInlogedUser) => {  
-    console.log("verifyUser -> getInlogedUser - 61", getInlogedUser)
     let getCorrectUserData = [];  
-    console.log("verifyUser -> incommingSQLDataArr - 63", SQLFunctions.incommingSQLDataArr)
     SQLFunctions.incommingSQLDataArr.map((obj) => {
         for (const key in obj) {
             if (obj[key].userName === getInlogedUser) {
