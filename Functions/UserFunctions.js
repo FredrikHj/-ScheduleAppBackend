@@ -1,5 +1,5 @@
 // ==================================== Userfunctions handling ====================================
-// Module imoport for the filesystem working
+// Module import for the filesystem working
 const fs = require('fs');
 
 // Function for the server and its funtion working
