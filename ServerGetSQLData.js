@@ -35,7 +35,7 @@ app.listen(port, () => console.log(`getSQLData is listening on port ${port}!`));
 const createdToken = [];
 
 /* Middleware according the name
-    Will using varifying the token string from eatch server request */ 
+    Will using to varfy the token string from eatch server request */ 
 /* let verifyToken = (req, res, next) =>{
     //const bearerHeader = req.headers['authorization'].split(' ')[1];
     // check there is a token
