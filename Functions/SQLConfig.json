@@ -1,10 +1,10 @@
 {
     "serverPort": "3001",
     "SQLPort": "3306",
-    "host"     : "m60mxazb4g6sb4nn.chr7pe7iynqr.eu-west-1.rds.amazonaws.com",
-    "user"     : "djcp7bmvky3s0mnm",
-    "password" : "osp74zwrq5ut4gun",
-    "database": "q3uqurm7z68qb3h2",
-    "SQLTable": "data",
+    "host"     : "192.168.0.237",
+    "user"     : "Fredrik",
+    "password" : "fh198238ytjHTR",
+    "database": "scheduleapp",
+    "SQLTable": "datarecords",
     "multipleStatements": "true"
 }
