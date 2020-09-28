@@ -159,8 +159,5 @@ app.post('/SQLData/RemoveRecord', (req, res) => {
     res.status(200).send('Aktiviteten Bortagen!');
 });
 app.post('/SQLData/EditRecord', (req, res) => {
-    /* Triggering the main sql function with a callback to creating a SQL question as (Att 1)
-    The callback take 2 att (Atr 1 = Run type, Atr 2 = The records currentTimeStamp to be remove for including into the question builder. */
-    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('removeRecord', req.body.bodyData));
-    res.status(200).send('Aktiviteten redigerad!');
+
 });
