@@ -34,7 +34,7 @@ exports.runSQLConn = (SQLStatement) =>{
     SQLConn.connect(function(err) { 
         if (err) throw err;        
         SQLConn.query(SQLStatement, function (error, sqlResult) {
-        console.log("exports.runSQLConn -> sqlResult", sqlResult)
+        //console.log("exports.runSQLConn -> sqlResult", sqlResult)
             incommingSQLDataArr.push(sqlResult);
 
             if (err) {
