@@ -40,6 +40,7 @@ const userId  = () => {
 
 // Validate the user who whants logging in
 exports.validateUser = (incommingUser) => {
+console.log("incommingUser", incommingUser)
     let getFullName = '';
     let userReturnData = {userMatch: false};
         
@@ -48,13 +49,15 @@ exports.validateUser = (incommingUser) => {
     // Check the userList for a userName vs password match
     for (let index = 0; index < userList.length; index++) {
         const getUsername = userList[index].userName;
+        console.log("getUsername", getUsername)
         const getPassword = userList[index].userPassWord;
         // Check if there are any match with a reged user
         if (incommingUser.userName === getUsername && incommingUser.userPassWord === getPassword) {
             userReturnData = {
                 userId: userId()-1,
                 userMatch: true,
-                loginName: userList[index].fullName
+                loginName: userList[index].fullName,
+                veryfiedUser: getUsername
             }
         }
     }
@@ -70,6 +73,7 @@ exports.verifyUser = (getInlogedUser) => {
         }
         return getCorrectUserData;
     });
+    console.log("getCorrectUserData", getCorrectUserData)
     return getCorrectUserData;
 }
 exports.fixSQLDataColsObj = (incommingCols) => {

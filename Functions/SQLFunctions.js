@@ -48,25 +48,31 @@ exports.runSQLConn = (SQLStatement) =>{
 exports.SQLDataArr = [incommingSQLDataArr];
 /* =======================================================================================================================
    SQL Question builder */
-exports.buildCorrectSQLStatements = (statementType, SQLObj) =>{ // Find correct SQLStatement
+exports.buildCorrectSQLStatements = (statementType, inlogedUser, dataArr) =>{ // Find correct SQLStatement
     if (statementType === 'first run') currentStatement = `SELECT * FROM ${SQLConfig.SQLTable} ORDER BY date DESC`;
+    if (statementType === 'userSpec') currentStatement = `SELECT * FROM ${SQLConfig.SQLTable} WHERE userName="${inlogedUser}" ORDER BY date DESC`;
     
     if (statementType === 'addRecord') {
         // Is adding currentInlogedUser at index 2 and adds the length with one 
-        SQLObj.unshift(addCurrentTimeSpamp());
-        SQLObj.splice(1, 0, currentInlogedUser);
-
-        let statementInsertIntoData = `('${ SQLObj.join("','")}');`;
+        dataArr.unshift(addCurrentTimeSpamp());
+        dataArr.splice(1, 0, inlogedUser);
+        
+        let statementInsertIntoData = `('${ dataArr.join("','")}');`;
         currentStatement = `INSERT INTO ${ SQLConfig.SQLTable} (${ statementCols.colsStr }) VALUES${ statementInsertIntoData}`;  
     }
-    if (statementType === 'userSpec') {
-        currentInlogedUser = SQLObj;
-        currentStatement = `SELECT * FROM ${SQLConfig.SQLTable} WHERE userName="${SQLObj}" ORDER BY date DESC`;
+    if (statementType === 'editRecord'){
+        console.log("statementType", statementType);
+        console.log("dataArr", dataArr);
+        console.log(inlogedUser);
+        console.log(statementCols.colsArr);
+
+        currentStatement = `UPDATE ${SQLConfig.SQLTable} SET ${ setRecordsCol(statementCols.colsArr, dataArr) } WHERE userName="${ inlogedUser }" AND WHERE timeStamp="${dataArr}"`;
     }
-    if (statementType === 'removeRecord') currentStatement = `DELETE FROM ${SQLConfig.SQLTable} WHERE timeStamp="${SQLObj}"`;
+    if (statementType === 'removeRecord') currentStatement = `DELETE FROM ${SQLConfig.SQLTable} WHERE timeStamp="${dataArr}"`;
 
     return currentStatement;
 }
+// General functions =========================================================================
 /* Add currrentTimeStamp for the tables records. The stamp is using identifaying the record to be removed when you
 clicking at the corresponding btns*/ 
 const addCurrentTimeSpamp = () => {
@@ -82,7 +88,14 @@ const addCurrentTimeSpamp = () => {
     let dateString = `${year}-${(date)}-${month+1}|${hour}:${min}:${sec}:${millisec}`;
     return dateString;
 }
-// General functions =========================================================================
+let setRecordsCol = (colArr, dataArr) => {
+let setStr = '';
+
+/* for (let index = 0; index < array.length; index++) {
+    const element = array[index];
+    
+} */
+}
 exports.resetSQLData = () => {
     incommingSQLDataArr = [];
 }

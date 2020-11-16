@@ -25,6 +25,7 @@ const path = require('path');
 let addRecord = false;
 let inNewRecord = false; 
 let countRegedUser = 0;
+let inlogedUser = '';
 
 // The server information
 const port = process.env.PORT || SQLConfig.serverPort;
@@ -74,12 +75,15 @@ app.get('/SQLData', (req, res) => {
     /* Triggering the main sql function with a callback to creating a SQL question as (Att 1)
         The callback take 2 att (Atr 1 = Run type, Atr 2 = some data object to send in for including to the question builder.
         Att 2 is emty because there is no data sending in for the default.  */
-    SQLFunctions.runSQLConn( SQLFunctions.buildCorrectSQLStatements('first run', '') ); 
+    SQLFunctions.runSQLConn( SQLFunctions.buildCorrectSQLStatements('first run', '', '') ); 
 
     setTimeout(()  => {
         res.status(200).send(SQLFunctions.incommingSQLData());        
     }, 500);  
     SQLFunctions.resetSQLData();
+
+    // Remove the inloged user
+    inlogedUser = '';
 });
 // UserReg =========================================================================
 app.post('/SQLData/UserReg', (req, res) => {
@@ -89,8 +93,8 @@ app.post('/SQLData/UserReg', (req, res) => {
     // Triggering the userReg function and sending in the new user data (Att 1)
     userFunctions.userReg(incomingNewUser.bodyData);
 
-    res.status(201).send('Användaren skapad');
     addRecord = false;
+    res.status(201).send('Användare skapad');
     
 });
 /* User loging in ===========================================================================
@@ -99,9 +103,11 @@ app.post('/SQLData/Auth', (req, res) => {
     /*  The userdata is comming and send into the function to validate the Logging in user:
         if = true, the code = 200 is sending back as respons together with a token
         else the code = 404 is sending with no data */
-    let incommingUserData = req.body.bodyData;
+    let incommingUserData = req.body.bodyData;   
     let returningVaryfiedUserData = userFunctions.validateUser(incommingUserData);
-     
+    console.log("returningVaryfiedUserData", returningVaryfiedUserData.veryfiedUser)
+    inlogedUser = returningVaryfiedUserData.veryfiedUser;
+    
     if (returningVaryfiedUserData.userMatch === true) {        
         jwt.sign(returningVaryfiedUserData, 'inlogSecretKey', (error, token) => {
             if(token){
@@ -111,8 +117,8 @@ app.post('/SQLData/Auth', (req, res) => {
             }
             if (error) res.status(500);             
         });        
-     }    
-
+    }    
+    
     if (returningVaryfiedUserData.userMatch === false) {
         res.statusMessage = "User does not find!";
         res.status(203).send(null); // User is unmatch
@@ -126,41 +132,43 @@ app.get('/SQLData/:user',/*  verifyToken, */ (req, res) => {
         SQLFunctions.resetSQLData();
         inNewRecord = true;
     /* Triggering the main sql function with a callback to creating a SQL question as (Att 1)
-        The callback take 2 att (Atr 1 = Run type, Atr 2 = The inlogging user to send in for including into the question builder. */
-        SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('userSpec', req.params.user));
+    The callback take 2 att (Atr 1 = Run type, Atr 2 = The inlogging user to send in for including into the question builder. */
+        SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('userSpec', req.params.user, ''));
             
-        setTimeout(() => {   
-            res.status(200).send({
-                SQLData: SQLFunctions.incommingSQLData(),
-                structuringCols: userFunctions.fixSQLDataColsObj(SQLDataColsObj),
-            })
-        }, 500); 
+    setTimeout(() => {   
+        res.status(200).send({
+            SQLData: SQLFunctions.incommingSQLData(),
+            structuringCols: userFunctions.fixSQLDataColsObj(SQLDataColsObj),
+        })
+    }, 500); 
 });
 // AddSQLData & RegUsers ============================================================
 app.post('/SQLData/AddRecord', (req, res) => {
     addRecord = true;
     let currentInData = req.body.bodyData;
     /* Triggering the main sql function with a callback to creating a SQL question as (Att 1)
-        The callback take 2 att (Atr 1 = Run type, Atr 2 = The added user to send in for including into the question builder. */
-    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('addRecord', currentInData));
-    res.status(201).send('Användaren Skapades!'); ;
+    The callback take 2 att (Atr 1 = Run type, Atr 2 = The added user to send in for including into the question builder. */
+    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('addRecord', '', currentInData));
+    res.status(201).send('Aktivitet skapad!'); ;
     console.log('===================================================================');
     addRecord = false;
     SQLFunctions.resetSQLData();
-
+        
 });
 
 // Record remove ============================================================================
 app.post('/SQLData/RemoveRecord', (req, res) => {
     /* Triggering the main sql function with a callback to creating a SQL question as (Att 1)
     The callback take 2 att (Atr 1 = Run type, Atr 2 = The records currentTimeStamp to be remove for including into the question builder. */
-    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('removeRecord', req.body.bodyData));
+    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('removeRecord', '', req.body.bodyData));
     console.log("req.body.bodyData", req.body.bodyData)
-    res.status(200).send('Aktiviteten Bortagen!');
+    res.status(200).send('Aktivitet Bortagen!');
 });
 app.post('/SQLData/EditRecord', (req, res) => {
+    console.log('Aktiviteten redigerad!');
     /* Triggering the main sql function with a callback to creating a SQL question as (Att 1)
     The callback take 2 att (Atr 1 = Run type, Atr 2 = The records currentTimeStamp to be remove for including into the question builder. */
-    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('removeRecord', req.body.bodyData));
-    res.status(200).send('Aktiviteten redigerad!');
+    SQLFunctions.runSQLConn(SQLFunctions.buildCorrectSQLStatements('editRecord', inlogedUser, req.body.bodyData));
+    res.status(200).send('Aktivitet redigerad!');
+    console.log("inlogedUser", inlogedUser)
 });
