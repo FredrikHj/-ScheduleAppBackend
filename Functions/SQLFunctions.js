@@ -21,6 +21,7 @@ exports.incommingSQLData = () => {
 /* =======================================================================================================================
  Headfunction for SQL*/
 exports.runSQLConn = (SQLStatement) =>{      
+console.log("runSQLConn - SQLStatement", SQLStatement)
     // Creates a connection between the server and my client and listen for SQL changes    
     console.log("Connect for the SQL DB :)");
     let SQLConn = mysql.createConnection({
@@ -34,7 +35,7 @@ exports.runSQLConn = (SQLStatement) =>{
     SQLConn.connect(function(err) { 
         if (err) throw err;        
         SQLConn.query(SQLStatement, function (error, sqlResult) {
-        //console.log("exports.runSQLConn -> sqlResult", sqlResult)
+        console.log("exports.runSQLConn -> sqlResult", sqlResult)
             incommingSQLDataArr.push(sqlResult);
 
             if (err) {
@@ -48,28 +49,28 @@ exports.runSQLConn = (SQLStatement) =>{
 exports.SQLDataArr = [incommingSQLDataArr];
 /* =======================================================================================================================
    SQL Question builder */
-exports.buildCorrectSQLStatements = (statementType, inlogedUser, dataArr) =>{ // Find correct SQLStatement
+exports.buildCorrectSQLStatements = (statementType, inlogedUser, incommingData) =>{ // Find correct SQLStatement
     if (statementType === 'first run') currentStatement = `SELECT * FROM ${SQLConfig.SQLTable} ORDER BY date DESC`;
     if (statementType === 'userSpec') currentStatement = `SELECT * FROM ${SQLConfig.SQLTable} WHERE userName="${inlogedUser}" ORDER BY date DESC`;
     
     if (statementType === 'addRecord') {
         // Is adding currentInlogedUser at index 2 and adds the length with one 
-        dataArr.unshift(addCurrentTimeSpamp());
-        dataArr.splice(1, 0, inlogedUser);
+        incommingData.unshift(addCurrentTimeSpamp());
+        incommingData.splice(1, 0, inlogedUser);
         
-        let statementInsertIntoData = `('${ dataArr.join("','")}');`;
+        let statementInsertIntoData = `('${ incommingData.join("','")}');`;
         currentStatement = `INSERT INTO ${ SQLConfig.SQLTable} (${ statementCols.colsStr }) VALUES${ statementInsertIntoData}`;  
     }
     if (statementType === 'editRecord'){
         console.log("statementType", statementType);
-        console.log("dataArr", dataArr);
+        console.log("incommingData", incommingData);
         console.log(inlogedUser);
         console.log(statementCols.colsArr);
 
-        currentStatement = `UPDATE ${SQLConfig.SQLTable} SET ${ setRecordsCol(statementCols.colsArr, dataArr) } WHERE userName="${ inlogedUser }" AND WHERE timeStamp="${dataArr}"`;
+        currentStatement = `UPDATE ${SQLConfig.SQLTable} SET${setRecordsCol(statementCols.colsArr, incommingData) } WHERE timeStamp="${'12:51'}"`;
     }
-    if (statementType === 'removeRecord') currentStatement = `DELETE FROM ${SQLConfig.SQLTable} WHERE timeStamp="${dataArr}"`;
-
+    if (statementType === 'removeRecord') currentStatement = `DELETE FROM ${SQLConfig.SQLTable} WHERE timeStamp="${incommingData}"`;
+    
     return currentStatement;
 }
 // General functions =========================================================================
@@ -88,13 +89,21 @@ const addCurrentTimeSpamp = () => {
     let dateString = `${year}-${(date)}-${month+1}|${hour}:${min}:${sec}:${millisec}`;
     return dateString;
 }
-let setRecordsCol = (colArr, dataArr) => {
-let setStr = '';
+let setRecordsCol = (colArr, incommingData) => {
+    let setStr = '';
+    let colValue = [];
+    console.log("setRecordsCol -> incommingData", incommingData);
+    //Remove first and second cols
+    colArr.splice(0,2);
 
-/* for (let index = 0; index < array.length; index++) {
-    const element = array[index];
-    
-} */
+    console.log("setRecordsCol -> colArr", colArr)
+
+    for (let index = 0; index < colArr.length; index++) {
+        colValue.push(`${colArr[index]}="${incommingData[index]}"`);
+        setStr = colValue.join(',');
+        
+    }
+    return setStr;
 }
 exports.resetSQLData = () => {
     incommingSQLDataArr = [];
