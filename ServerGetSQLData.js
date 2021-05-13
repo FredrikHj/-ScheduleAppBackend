@@ -78,6 +78,7 @@ app.get('/SQLData', (req, res) => {
     SQLFunctions.runSQLConn( SQLFunctions.buildCorrectSQLStatements('first run', '', '') ); 
 
     setTimeout(()  => {
+        console.log(SQLFunctions.incommingSQLData());
         res.status(200).send(SQLFunctions.incommingSQLData());        
     }, 500);  
     SQLFunctions.resetSQLData();
@@ -110,6 +111,8 @@ app.post('/SQLData/Auth', (req, res) => {
     
     if (returningVaryfiedUserData.userMatch === true) {        
         jwt.sign(returningVaryfiedUserData, 'inlogSecretKey', (error, token) => {
+        console.log("🚀 ~ file: ServerGetSQLData.js ~ line 113 ~ setTimeout ~ SQLFunctions.incommingSQLData()", SQLFunctions.incommingSQLData())
+        console.log("🚀 ~ file: ServerGetSQLData.js ~ line 113 ~ setTimeout ~ SQLFunctions.incommingSQLData()", SQLFunctions.incommingSQLData())
             if(token){
                 createdToken.push(token);
                 res.statusMessage = "You are authenticated'";

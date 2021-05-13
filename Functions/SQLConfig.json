@@ -1,9 +1,9 @@
 {
     "serverPort": "3001",
     "SQLPort": "3306",
-    "host"     : "192.168.0.237",
-    "user"     : "Fredrik",
-    "password" : "fh198238ytjHTR",
+    "host"     : "hbgipnr.mina-projekt.se",
+    "user"     : "mediaViewer",
+    "password" : "rgdGHTR56",
     "database": "scheduleapp",
     "SQLTable": "datarecords",
     "multipleStatements": "true"
